@@ -5,7 +5,7 @@
 1. Download `ShapeNetCore` dataset
 2. Set the `MODEL_ROOT_PATH` in `lib/config.py` to the extracted `ShapeNetCore`
 3. Download model lists from the website. Some models do not have any faces.
-4. Generate dataset `json` file by running `python tools/generate_category_list.py`
+4. Generate dataset `json` file by running `python tools/gen_category_list.py`
 5. Voxelize all the models by running `python tools/voxelize_models.py`
 6. Render all the models by runnning `python tools/render_models.py`. To run this step, you have to setup `blender`.
 7. Set `cfg.DIR.MODEL_PATH`, `cfg.DIR.RENDERING_PATH` and `cfg.DIR.VOXEL_PATH` in `lib/config.py` accoringly

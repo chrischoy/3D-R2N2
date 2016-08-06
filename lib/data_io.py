@@ -68,11 +68,12 @@ def category_model_id_pair(dataset_portion=[]):
         models = model_names(model_path, model_file)
         num_models = len(models)
 
-        portioned_models = models[int(num_models * dataset_portion[0]):
-                                  int(num_models * dataset_portion[1])]
+        portioned_models = models[
+            int(num_models * dataset_portion[0]):
+            int(num_models * dataset_portion[1])
+        ]
 
-        category_name_pair.extend([(cat['id'], model_id)
-                                   for model_id in portioned_models])
+        category_name_pair.extend([(cat['id'], model_id) for model_id in portioned_models])
 
     print('lib/data_io.py: model paths from %s' % (cfg.DATASET))
 

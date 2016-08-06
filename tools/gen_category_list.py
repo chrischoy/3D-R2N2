@@ -26,4 +26,4 @@ for k, v in c_dict.items():
             out_d[k]['dir'] = cfg.DIR.MODEL_ROOT_PATH + '/' + k
             out_d[k]['model_list'] = 'models.txt'
 
-json.dump(out_d, open('./experiments/dataset/shapenet_1000.json.test', 'w+'), indent=4)
+json.dump(out_d, open('./experiments/dataset/shapenet_1000.json', 'w+'), indent=4)

@@ -1,63 +1,123 @@
-#!/usr/bin/env python3
-
+'''
+Parallel data loading functions
+'''
 import _init_paths
 
 import sys
 import os
-from PIL import Image
-from multiprocessing import Process, Event
+import time
+import theano
 import numpy as np
 import traceback
-
-# Theano
-import theano
+from PIL import Image
+from six.moves import queue
+from multiprocessing import Process, Event
 
 from lib.config import cfg
 from lib.data_augmentation import image_transform, add_random_background, \
-    add_random_color_background
-from lib.data_io import get_model_file, get_voxel_file, get_rendering_file
+    add_random_color_background, crop_center
+from lib.data_io import get_model_file, get_voxel_file, get_rendering_file, get_voc2012_imglist
 from lib.voxel import voxelize_model_binvox
 
 import tools.binvox_rw as binvox_rw
 
 
-# Force a separate process to print error traces
 def print_error(func):
+    '''Flush out error messages. Mainly used for debugging separate processes'''
+
     def func_wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except:
             traceback.print_exception(*sys.exc_info())
             sys.stdout.flush()
+
     return func_wrapper
 
 
 class DataProcess(Process):
-    def __init__(self, data_queue, category_model_pair, background_imgs=[]):
+
+    def __init__(self, data_queue, data_paths, repeat=True):
+        '''
+        data_queue : Multiprocessing queue
+        data_paths : list of data and label pair used to load data
+        repeat : if set True, return data until exit is set
+        '''
         super(DataProcess, self).__init__()
+        # Queue to transfer the loaded mini batches
         self.data_queue = data_queue
-        self.category_model_pair = category_model_pair
-        self.num_data = len(category_model_pair)
+        self.data_paths = data_paths
+        self.num_data = len(data_paths)
+        self.repeat = repeat
+
+        # Tuple of data shape
         self.batch_size = cfg.CONST.BATCH_SIZE
         self.exit = Event()
         self.shuffle_db_inds()
-        self.background_imgs = background_imgs
 
     def shuffle_db_inds(self):
         # Randomly permute the training roidb
-        self.perm = np.random.permutation(np.arange(self.num_data))
+        if self.repeat:
+            self.perm = np.random.permutation(np.arange(self.num_data))
+        else:
+            self.perm = np.arange(self.num_data)
         self.cur = 0
 
     def get_next_minibatch(self):
-        if self.cur + self.batch_size >= self.num_data:
+        if (self.cur + self.batch_size) >= self.num_data and self.repeat:
             self.shuffle_db_inds()
 
-        db_inds = self.perm[self.cur:self.cur + self.batch_size]
+        db_inds = self.perm[self.cur:min(self.cur + self.batch_size, self.num_data)]
         self.cur += self.batch_size
         return db_inds
 
     def shutdown(self):
         self.exit.set()
+
+    @print_error
+    def run(self):
+        iteration = 0
+        # Run the loop until exit flag is set
+        while not self.exit.is_set() and self.cur <= self.num_data:
+            # Ensure that the network sees (almost) all data per epoch
+            db_inds = self.get_next_minibatch()
+
+            data_list = []
+            label_list = []
+            for batch_id, db_ind in enumerate(db_inds):
+                datum = self.load_datum(self.data_paths[db_ind])
+                label = self.load_label(self.data_paths[db_ind])
+
+                data_list.append(datum)
+                label_list.append(label)
+
+            batch_data = np.array(data_list).astype(np.float32)
+            batch_label = np.array(label_list).astype(np.float32)
+
+            # The following will wait until the queue frees
+            self.data_queue.put((batch_data, batch_label), block=True)
+            iteration += 1
+
+    def load_datum(self, path):
+        pass
+
+    def load_label(self, path):
+        pass
+
+
+class ReconstructionDataProcess(DataProcess):
+
+    def __init__(self,
+                 data_queue,
+                 category_model_pair,
+                 background_imgs=[],
+                 repeat=True,
+                 crop_center=False):
+        self.repeat = repeat
+        self.crop_center = crop_center
+        self.background_imgs = background_imgs
+        super(ReconstructionDataProcess, self).__init__(
+            data_queue, category_model_pair, repeat=repeat)
 
     @print_error
     def run(self):
@@ -80,54 +140,24 @@ class DataProcess(Process):
                 curr_n_views = n_views
 
             # This will be fed into the queue. create new batch everytime
-            batch_img = np.zeros((curr_n_views, self.batch_size, 3, img_h, img_w),
-                                  dtype=theano.config.floatX)
-            batch_voxel = np.zeros((self.batch_size, n_vox, 2, n_vox, n_vox),
-                                   dtype=theano.config.floatX)
+            batch_img = np.zeros(
+                (curr_n_views, self.batch_size, 3, img_h, img_w), dtype=theano.config.floatX)
+            batch_voxel = np.zeros(
+                (self.batch_size, n_vox, 2, n_vox, n_vox), dtype=theano.config.floatX)
 
+            # load each data instance
             for batch_id, db_ind in enumerate(db_inds):
-                # Data Augmentation.
-                category, model_id = self.category_model_pair[db_ind]
+                category, model_id = self.data_paths[db_ind]
                 image_ids = np.random.choice(cfg.TRAIN.NUM_RENDERING, curr_n_views)
 
+                # load multi view images
                 for view_id, image_id in enumerate(image_ids):
-                    image_fn = get_rendering_file(category, model_id, image_id)
-                    im = Image.open(image_fn)
-
-                    # add random background
-                    if len(self.background_imgs) > 0:
-                        if np.random.rand(1) > cfg.TRAIN.SIMPLE_BACKGROUND_RATIO:
-                            im = add_random_background(im, self.background_imgs)
-                        else:
-                            im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE)
-                    else:
-                        # set white background
-                        im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE)
-
-                    im_rgb = np.array(im)[:, :, :3]
-                    t_im = image_transform(im_rgb, cfg.TRAIN.PAD_X, cfg.TRAIN.PAD_Y)
-
-                    # Preprocessing
-                    if cfg.TRAIN.PREPROCESSING_TYPE == 'center':
-                        t_im = t_im - cfg.CONST.IMAGE_MEAN
-                    elif cfg.TRAIN.PREPROCESSING_TYPE == 'scale':
-                        t_im = t_im / 255.
-
+                    im = self.load_img(category, model_id, image_id)
                     # channel, height, width
                     batch_img[view_id, batch_id, :, :, :] = \
-                        t_im.transpose((2, 0, 1))\
-                        .astype(theano.config.floatX)
+                        im.transpose((2, 0, 1)).astype(theano.config.floatX)
 
-                voxel_fn = get_voxel_file(category, model_id)
-                if not os.path.exists(voxel_fn):
-                    model_fn = get_model_file(category, model_id)
-                    voxel = voxelize_model_binvox(model_fn, cfg.CONST.N_VOX, True)
-                    with open(voxel_fn, 'wb') as f:
-                        binvox_rw.write(voxel, f)
-
-                with open(voxel_fn, 'rb') as f:
-                    voxel = binvox_rw.read_as_3d_array(f)
-
+                voxel = self.load_label(category, model_id)
                 voxel_data = voxel.data
 
                 batch_voxel[batch_id, :, 0, :, :] = voxel_data < 1
@@ -136,27 +166,104 @@ class DataProcess(Process):
             # The following will wait until the queue frees
             self.data_queue.put((batch_img, batch_voxel), block=True)
 
-        print('Data process ends the while loop')
-        return
+        print('Exiting')
+
+    def load_img(self, category, model_id, image_id):
+        image_fn = get_rendering_file(category, model_id, image_id)
+        im = Image.open(image_fn)
+
+        # add random background
+        if len(self.background_imgs) > 0 and \
+                np.random.rand(1) > cfg.TRAIN.SIMPLE_BACKGROUND_RATIO:
+            im = add_random_background(im, self.background_imgs)
+        else:
+            im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE)
+
+        im_rgb = np.array(im)[:, :, :3]
+        if self.crop_center:
+            t_im = crop_center(im_rgb, cfg.CONST.IMG_H, cfg.CONST.IMG_W)
+        else:
+            t_im = image_transform(im_rgb, cfg.TRAIN.PAD_X, cfg.TRAIN.PAD_Y)
+
+        # Preprocessing
+        if cfg.TRAIN.PREPROCESSING_TYPE == 'center':
+            t_im = t_im - cfg.CONST.IMAGE_MEAN
+        elif cfg.TRAIN.PREPROCESSING_TYPE == 'scale':
+            t_im = t_im / 255.
+
+        return t_im
+
+    def load_label(self, category, model_id):
+        voxel_fn = get_voxel_file(category, model_id)
+        if not os.path.exists(voxel_fn):
+            model_fn = get_model_file(category, model_id)
+            voxel = voxelize_model_binvox(model_fn, cfg.CONST.N_VOX, True)
+            with open(voxel_fn, 'wb') as f:
+                binvox_rw.write(voxel, f)
+
+        with open(voxel_fn, 'rb') as f:
+            voxel = binvox_rw.read_as_3d_array(f)
+
+        return voxel
+
+
+def kill_processes(queue, processes):
+    print('Signal processes')
+    for p in processes:
+        p.shutdown()
+
+    print('Empty queue')
+    while not queue.empty():
+        time.sleep(0.5)
+        queue.get(False)
+
+    print('kill processes')
+    for p in processes:
+        p.terminate()
+
+
+def make_data_processes(queue, data_paths, num_workers, repeat=True):
+    '''
+    Make a set of data processes for parallel data loading.
+    '''
+    processes = []
+    for i in range(num_workers):
+        bg_list = []
+        if cfg.TRAIN.RANDOM_BACKGROUND:
+            bg_list = get_voc2012_imglist()
+        process = ReconstructionDataProcess(queue, data_paths, bg_list, repeat=repeat)
+        process.start()
+        processes.append(process)
+    return processes
+
+
+def get_while_running(data_process, data_queue, sleep_time=0):
+    while True:
+        time.sleep(sleep_time)
+        try:
+            batch_data, batch_label = data_queue.get_nowait()
+        except queue.Empty:
+            if not data_process.is_alive():
+                break
+            else:
+                continue
+        yield batch_data, batch_label
 
 
 def test_process():
-    from lib.data_io import category_model_id_pair, get_voc2012_imglist
     from multiprocessing import Queue
-    from train_net import kill_processes
     from lib.config import cfg
+    from lib.data_io import category_model_id_pair
 
     cfg.TRAIN.PAD_X = 10
     cfg.TRAIN.PAD_Y = 10
 
-    data_queue = Queue(1)
-    category_model_pair = category_model_id_pair(dataset_portion=[0, 1])
-    voc2012_imglist = get_voc2012_imglist()  # Test random background
+    data_queue = Queue(2)
+    category_model_pair = category_model_id_pair(dataset_portion=[0, 0.1])
 
-    data_process = DataProcess(data_queue, category_model_pair, voc2012_imglist)
+    data_process = ReconstructionDataProcess(data_queue, category_model_pair)
     data_process.start()
     batch_img, batch_voxel = data_queue.get()
-    import ipdb; ipdb.set_trace()
 
     kill_processes(data_queue, [data_process])
 

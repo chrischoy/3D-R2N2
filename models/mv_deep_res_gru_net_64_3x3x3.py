@@ -130,15 +130,21 @@ class RecNet(Net):
 
             prev_s_ = InputLayer(s_shape, prev_s_tensor)
 
-            t_x_s_update_ = FCConv3DLayer(prev_s_, rect7_, (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3), params=t_x_s_update.params)
-            t_x_s_reset_  = FCConv3DLayer(prev_s_, rect7_, (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3), params=t_x_s_reset.params)
+            t_x_s_update_ = FCConv3DLayer(prev_s_, rect7_,
+                                          (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3),
+                                          params=t_x_s_update.params)
+            t_x_s_reset_  = FCConv3DLayer(prev_s_, rect7_,
+                                          (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3),
+                                          params=t_x_s_reset.params)
 
             update_gate_      = SigmoidLayer(t_x_s_update_)
             comp_update_gate_ = ComplementLayer(update_gate_)
             reset_gate_       = SigmoidLayer(t_x_s_reset_)
 
             rs_     = EltwiseMultiplyLayer(reset_gate_, prev_s_)
-            t_x_rs_ = FCConv3DLayer(rs_, rect7_, (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3), params=t_x_rs.params)
+            t_x_rs_ = FCConv3DLayer(rs_, rect7_,
+                                    (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3),
+                                    params=t_x_rs.params)
             tanh_t_x_rs_ = TanhLayer(t_x_rs_)
 
             gru_out_ = AddLayer(EltwiseMultiplyLayer(update_gate_, prev_s_),

@@ -24,7 +24,7 @@ __C.CONST.N_VIEWS = 1
 __C.CONST.BATCH_SIZE = 36
 __C.CONST.RECNET = 'rec_net'
 __C.CONST.WEIGHTS = '/scratch/chrischoy/mv_deep_res_gru_net_3x3x3/max_5_views_no_rnd_bg/weights.npy.39999.npy'  # when set, load the weights from the file
-__C.CONST.IMAGE_MEAN = np.load('mean.npz')['mean']
+__C.CONST.IMAGE_MEAN = np.load('./models/data/shapenet_mean.npz')['mean']
 
 #
 # Directories
@@ -54,6 +54,8 @@ __C.TRAIN.WORKER_LIFESPAN = 100  # if use blender, kill a worker after some iter
 __C.TRAIN.WORKER_CAPACITY = 1000  # if use OSG, load only limited number of models at a time
 __C.TRAIN.NUM_RENDERING = 24
 __C.TRAIN.NUM_VALIDATION_ITERATIONS = 24
+__C.TRAIN.VALIDATION_FREQ = 2000
+__C.TRAIN.NAN_CHECK_FREQ = 2000
 __C.TRAIN.RANDOM_NUM_VIEWS = True  # feed in random # views if n_views > 1
 
 __C.QUEUE_SIZE = 15  # maximum number of minibatches that can be put in a data queue
@@ -62,9 +64,7 @@ __C.QUEUE_SIZE = 15  # maximum number of minibatches that can be put in a data q
 __C.TRAIN.RANDOM_CROP = True
 __C.TRAIN.PAD_X = 10
 __C.TRAIN.PAD_Y = 10
-__C.TRAIN.HUE_CHANGE = True
 __C.TRAIN.FLIP = True
-__C.TRAIN.HUE_RANGE = 0.1
 
 # For no random bg images, add random colors
 __C.TRAIN.NO_BG_COLOR_RANGE = [[225, 255], [225, 255], [225, 255]]
@@ -83,7 +83,7 @@ __C.TRAIN.MOMENTUM = 0.95
 # after the training almost converged since weight can increase indefinitely
 # (for cross entropy loss). Too high regularization will also hinder training.
 __C.TRAIN.WEIGHT_DECAY = 0.00005
-
+__C.TRAIN.LOSS_LIMIT = 2  # stop training if the loss exceeds the limit
 __C.TRAIN.SAVE_FREQ = 10000   # weights will be overwritten every save_freq
 __C.TRAIN.PRINT_FREQ = 40
 
@@ -93,7 +93,7 @@ __C.TRAIN.PRINT_FREQ = 40
 # Scale: scale 1/255
 # Center: subtract mean from the image
 ###############################################################################
-__C.TRAIN.PREPROCESSING_TYPE = 'center' # ['scale', 'center']
+__C.TRAIN.PREPROCESSING_TYPE = 'scale' # ['scale', 'center']
 
 #
 # Testing options

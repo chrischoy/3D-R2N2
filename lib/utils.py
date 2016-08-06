@@ -2,8 +2,8 @@
 
 import os
 import sys
-from contextlib import contextmanager
 import time
+from contextlib import contextmanager
 
 
 def fileno(file_or_fd):
@@ -61,32 +61,3 @@ class Timer(object):
             return self.average_time
         else:
             return self.diff
-
-# class Timer:
-#     def __init__(self):
-#         self.reset()
-#
-#     def update(self, train_time, wait_time):
-#         self.cycle += 1
-#         self.cycle_t = time.time() - self.prev_time
-#         self.accum_time += self.cycle_t
-#         self.eta = self.accum_time/self.cycle*100000/3600
-#         self.prev_time = time.time()
-#
-#         self.accum_train_time += train_time
-#         self.accum_wait_time += wait_time
-#
-#     def reset(self):
-#         self.prev_time = time.time()
-#         self.accum_time = 0
-#         self.accum_train_time = 0
-#         self.accum_wait_time = 0
-#         self.cycle_t = 0
-#         self.cycle = 0
-#         self.eta = 0
-#
-#     def print_stat(self):
-#         print("Average cycle time: %fs" % (self.accum_time/self.cycle))
-#         print("Average training time: %fs" % (self.accum_train_time/self.cycle))
-#         print("Average waiting time: %fs" % (self.accum_wait_time/self.cycle))
-#         print("ETA: %f hrs" % (self.eta))
