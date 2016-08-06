@@ -1,0 +1,5 @@
+*.pyc
+*.mexa64
+
+wiki/
+output/

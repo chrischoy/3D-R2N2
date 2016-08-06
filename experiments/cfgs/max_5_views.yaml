@@ -1,0 +1,4 @@
+CONST:
+  N_VIEWS: 5
+TRAIN:
+  RANDOM_NUM_VIEWS: True

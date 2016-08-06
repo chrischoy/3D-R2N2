@@ -1,0 +1,6 @@
+# Theano
+Theano>=0.7
+# blender
+EasyDict
+Pillow
+pyyaml

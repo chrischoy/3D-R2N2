@@ -1,0 +1,5 @@
+TRAIN:
+    PAD_X: 10
+    PAD_Y: 10
+    RANDOM_CROP: True
+
