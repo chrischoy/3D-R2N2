@@ -129,7 +129,7 @@ class ReconstructionDataProcess(DataProcess):
         # This is the maximum number of views
         n_views = cfg.CONST.N_VIEWS
 
-        while not self.exit.is_set():
+        while not self.exit.is_set() and self.cur <= self.num_data:
             # To insure that the network sees (almost) all images per epoch
             db_inds = self.get_next_minibatch()
 

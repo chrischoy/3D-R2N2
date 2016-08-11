@@ -8,7 +8,7 @@ from models.net import Net, tensor5
 from lib.layers import TensorProductLayer, ConvLayer, PoolLayer, Unpool3DLayer, \
     LeakyReLU, SoftmaxWithLoss3D, Conv3DLayer, InputLayer, FlattenLayer, \
     FCConv3DLayer, TanhLayer, SigmoidLayer, ComplementLayer, AddLayer, \
-    EltwiseMultiplyLayer
+    EltwiseMultiplyLayer, trainable_params
 
 
 class RecNet(Net):
@@ -196,20 +196,8 @@ class RecNet(Net):
         conv11  = Conv3DLayer(res10, (n_deconvfilter[5], 3, 3, 3))
         softmax_loss = SoftmaxWithLoss3D(conv11.output)
 
-        params = \
-            conv1a.params + conv1b.params + conv2a.params + conv2b.params + \
-            conv3a.params + conv3b.params + conv4a.params + conv4b.params + \
-            conv5a.params + conv5b.params + conv6a.params + conv6b.params + \
-            fc7.params + \
-            t_x_s_update.params + t_x_s_reset.params + t_x_rs.params + \
-            conv7a.params + conv7b.params + \
-            conv8a.params + conv8b.params + conv8c.params + \
-            conv9a.params + conv9b.params + conv9c.params + \
-            conv10a.params + conv10b.params + conv10c.params + \
-            conv11.params
-
         self.loss = softmax_loss.loss(self.y)
         self.error = softmax_loss.error(self.y)
-        self.params = params
+        self.params = trainable_params
         self.output = softmax_loss.prediction()
         self.activations = [update_all]

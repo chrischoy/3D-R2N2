@@ -1,5 +1,0 @@
-CONST:
-    N_VIEWS: 1
-TRAIN:
-    RESUME_TRAIN: True
-    USE_REAL_IMG: True

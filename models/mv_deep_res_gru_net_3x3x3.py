@@ -8,7 +8,7 @@ from models.net import Net, tensor5
 from lib.layers import TensorProductLayer, ConvLayer, PoolLayer, Unpool3DLayer, \
     LeakyReLU, SoftmaxWithLoss3D, Conv3DLayer, InputLayer, FlattenLayer, \
     FCConv3DLayer, TanhLayer, SigmoidLayer, ComplementLayer, AddLayer, \
-    EltwiseMultiplyLayer
+    EltwiseMultiplyLayer, trainable_params
 
 
 class RecNet(Net):
@@ -50,6 +50,7 @@ class RecNet(Net):
 
         conv5a = ConvLayer(pool4, (n_convfilter[4], 3, 3))
         conv5b = ConvLayer(conv5a, (n_convfilter[4], 3, 3))
+        conv5c = ConvLayer(pool4, (n_convfilter[4], 1, 1))
         pool5  = PoolLayer(conv5b)
 
         conv6a = ConvLayer(pool5, (n_convfilter[5], 3, 3))
@@ -74,10 +75,6 @@ class RecNet(Net):
 
         rs     = EltwiseMultiplyLayer(reset_gate, prev_s)
         t_x_rs = FCConv3DLayer(rs, fc7, (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3))
-        # tanh_t_x_rs = TanhLayer(t_x_rs)
-
-        # gru_out = AddLayer(EltwiseMultiplyLayer(update_gate, prev_s),
-        #                    EltwiseMultiplyLayer(comp_update_gate, tanh_t_x_rs))
 
         def recurrence(x_curr, prev_s_tensor, prev_in_gate_tensor):
             # Scan function cannot use compiled function.
@@ -114,7 +111,8 @@ class RecNet(Net):
             rect5a_ = LeakyReLU(conv5a_)
             conv5b_ = ConvLayer(rect5a_, (n_convfilter[4], 3, 3), params=conv5b.params)
             rect5_  = LeakyReLU(conv5b_)
-            res5_   = AddLayer(pool4_, rect5_)
+            conv5c_ = ConvLayer(pool4_, (n_convfilter[4], 1, 1), params=conv5c.params)
+            res5_   = AddLayer(conv5c_, rect5_)
             pool5_  = PoolLayer(res5_)
 
             conv6a_ = ConvLayer(pool5_, (n_convfilter[5], 3, 3), params=conv6a.params)
@@ -130,15 +128,28 @@ class RecNet(Net):
 
             prev_s_ = InputLayer(s_shape, prev_s_tensor)
 
-            t_x_s_update_ = FCConv3DLayer(prev_s_, rect7_, (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3), params=t_x_s_update.params)
-            t_x_s_reset_  = FCConv3DLayer(prev_s_, rect7_, (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3), params=t_x_s_reset.params)
+            t_x_s_update_ = FCConv3DLayer(
+                prev_s_,
+                rect7_,
+                (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3),
+                params=t_x_s_update.params)
+
+            t_x_s_reset_  = FCConv3DLayer(
+                prev_s_,
+                rect7_,
+                (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3),
+                params=t_x_s_reset.params)
 
             update_gate_      = SigmoidLayer(t_x_s_update_)
             comp_update_gate_ = ComplementLayer(update_gate_)
             reset_gate_       = SigmoidLayer(t_x_s_reset_)
 
             rs_     = EltwiseMultiplyLayer(reset_gate_, prev_s_)
-            t_x_rs_ = FCConv3DLayer(rs_, rect7_, (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3), params=t_x_rs.params)
+            t_x_rs_ = FCConv3DLayer(
+                rs_,
+                rect7_,
+                (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3),
+                params=t_x_rs.params)
             tanh_t_x_rs_ = TanhLayer(t_x_rs_)
 
             gru_out_ = AddLayer(EltwiseMultiplyLayer(update_gate_, prev_s_),
@@ -191,19 +202,8 @@ class RecNet(Net):
         conv11  = Conv3DLayer(res10, (n_deconvfilter[5], 3, 3, 3))
         softmax_loss = SoftmaxWithLoss3D(conv11.output)
 
-        params = \
-            conv1a.params + conv1b.params + conv2a.params + conv2b.params + \
-            conv3a.params + conv3b.params + conv4a.params + conv4b.params + \
-            conv5a.params + conv5b.params + conv6a.params + conv6b.params + \
-            fc7.params + \
-            t_x_s_update.params + t_x_s_reset.params + t_x_rs.params + \
-            conv7a.params + conv7b.params + conv8a.params + conv8b.params + \
-            conv9a.params + conv9b.params + conv9c.params + \
-            conv10a.params + conv10b.params + conv10c.params + \
-            conv11.params
-
         self.loss = softmax_loss.loss(self.y)
         self.error = softmax_loss.error(self.y)
-        self.params = params
+        self.params = trainable_params
         self.output = softmax_loss.prediction()
         self.activations = [update_all]

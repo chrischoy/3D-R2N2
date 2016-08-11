@@ -38,7 +38,10 @@ def parse_args():
                         default=None, type=str)
     parser.add_argument('--batch-size', dest='batch_size',
                         help='name of the net',
-                        default=None, type=str)
+                        default=cfg.CONST.BATCH_SIZE, type=int)
+    parser.add_argument('--iter', dest='iter',
+                        help='number of iterations',
+                        default=cfg.TRAIN.NUM_ITERATION, type=int)
     parser.add_argument('--dataset', dest='dataset',
                         help='dataset config file',
                         default=None, type=str)
@@ -52,8 +55,8 @@ def parse_args():
                         help='Initialize network from the weights file', default=None)
     parser.add_argument('--out', dest='out_path',
                         help='set output path', default=cfg.DIR.OUT_PATH)
-    parser.add_argument('--iter', dest='init_iter',
-                        help='Start from the specified iteration', default=0)
+    parser.add_argument('--init-iter', dest='init_iter',
+                        help='Start from the specified iteration', default=cfg.TRAIN.INITIAL_ITERATION)
     args = parser.parse_args()
     return args
 
@@ -75,6 +78,10 @@ def main():
     if not args.randomize:
         np.random.seed(cfg.CONST.RNG_SEED)
 
+    if args.batch_size is not None:
+        cfg_from_list(['CONST.BATCH_SIZE', args.batch_size])
+    if args.iter is not None:
+        cfg_from_list(['TRAIN.NUM_ITERATION', args.iter])
     if args.net_name is not None:
         cfg_from_list(['NET_NAME', args.net_name])
     if args.model_name is not None:

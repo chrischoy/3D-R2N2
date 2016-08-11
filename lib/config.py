@@ -49,7 +49,7 @@ __C.TRAIN.DATASET_PORTION = [0, 0.8]
 
 # Data worker
 __C.TRAIN.NUM_WORKER = 1  # number of data workers
-__C.TRAIN.NUM_ITERATION = 120000  # maximum number of training iterations
+__C.TRAIN.NUM_ITERATION = 60000  # maximum number of training iterations
 __C.TRAIN.WORKER_LIFESPAN = 100  # if use blender, kill a worker after some iteration to clear cache
 __C.TRAIN.WORKER_CAPACITY = 1000  # if use OSG, load only limited number of models at a time
 __C.TRAIN.NUM_RENDERING = 24
@@ -76,8 +76,8 @@ __C.TRAIN.SIMPLE_BACKGROUND_RATIO = 0.5  # ratio of the simple backgrounded imag
 __C.TRAIN.DEFAULT_LEARNING_RATE = 1e-4
 __C.TRAIN.POLICY = 'adam'  # def: sgd, adam
 # The EasyDict can't use dict with integers as keys
-__C.TRAIN.LEARNING_RATES = {'40000': 1e-5,
-                            '80000': 1e-6}
+__C.TRAIN.LEARNING_RATES = {'20000': 1e-5,
+                            '40000': 1e-6}
 __C.TRAIN.MOMENTUM = 0.95
 # weight decay or regularization constant. If not set, the loss can diverge
 # after the training almost converged since weight can increase indefinitely

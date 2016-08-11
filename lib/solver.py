@@ -179,7 +179,7 @@ class Solver(object):
                     break
 
             if train_ind % cfg.TRAIN.SAVE_FREQ == 0 and not train_ind == 0:
-                self.save(self.net, training_losses, save_dir, train_ind)
+                self.save(training_losses, save_dir, train_ind)
 
             if loss > cfg.TRAIN.LOSS_LIMIT:
                 print("Cost exceeds the threshold. Stop training")

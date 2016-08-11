@@ -6,16 +6,16 @@ import theano
 import theano.tensor as tensor
 from theano.tensor.nnet import conv, conv3d2d, sigmoid
 from theano.tensor.signal import downsample
-# from theano.tensor.nnet.bn import batch_normalization
 
-rng = np.random.RandomState(23455)
 
+trainable_params = []
 
 class Weight(object):
     def __init__(self, w_shape, is_bias, mean=0, std=0.01, filler='msra',
-                 fan_in=None, fan_out=None):
+                 fan_in=None, fan_out=None, name=None):
         super(Weight, self).__init__()
         assert(is_bias in [True, False])
+        rng = np.random.RandomState()
 
         if isinstance(w_shape, collections.Iterable) and not is_bias:
             if len(w_shape) > 1 and len(w_shape) < 5:
@@ -59,6 +59,10 @@ class Weight(object):
         self.is_bias = is_bias  # Either the weight is bias or not
         self.val = theano.shared(value=self.np_values)
         self.shape = w_shape
+        self.name = name
+
+        global trainable_params
+        trainable_params.append(self)
 
 
 class InputLayer(object):

@@ -1,6 +1,16 @@
-# 3D Everything
+# 3D-R2N2: Recurrent Reconstruction Neural Network
 
-## Setup
+This is the source code for the paper `3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016`. Given one or multiple views of an object, the network generate voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D.
+
+
+## Overview
+
+Given a set of images
+
+- [ShapeNet rendering](http://cvgl.stanford.edu/data2/ShapeNetRendering.tgz)
+- [ShapeNet voxelized models](http://cvgl.stanford.edu/data2/ShapeNetVox32.tgz)
+
+## Installation
 
 1. Download `ShapeNetCore` dataset
 2. Set the `MODEL_ROOT_PATH` in `lib/config.py` to the extracted `ShapeNetCore`

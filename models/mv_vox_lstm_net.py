@@ -7,7 +7,7 @@ import theano.tensor as tensor
 from models.net import Net, tensor5
 from lib.layers import TensorProductLayer, ConvLayer, PoolLayer, Unpool3DLayer, \
     LeakyReLU, SoftmaxWithLoss3D, Conv3DLayer, InputLayer, FlattenLayer, \
-    ReshapeLayer, SigmoidLayer, AddLayer, TanhLayer, EltwiseMultiplyLayer
+    ReshapeLayer, SigmoidLayer, AddLayer, TanhLayer, EltwiseMultiplyLayer, trainable_params
 
 
 class RecNet(Net):
@@ -146,16 +146,8 @@ class RecNet(Net):
         conv12   = Conv3DLayer(rect11, (n_deconvfilter[5], 3, 3, 3))
         softmax_loss = SoftmaxWithLoss3D(conv12.output)
 
-        params = conv1.params + conv2.params + conv3.params + conv4.params + \
-            conv5.params + conv6.params + fc7.params + \
-            conv8.params + conv9.params + \
-            in_gate_vox_x.params + in_gate_vox_h.params + \
-            forget_gate_vox_x.params + forget_gate_vox_h.params + \
-            in_transform_vox_x.params + in_transform_vox_h.params + \
-            conv10.params + conv11.params + conv12.params
-
         self.loss = softmax_loss.loss(self.y)
         self.error = softmax_loss.error(self.y)
-        self.params = params
+        self.params = trainable_params
         self.output = softmax_loss.prediction()
         self.activations = [in_all]

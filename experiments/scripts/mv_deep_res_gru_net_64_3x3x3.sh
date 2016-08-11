@@ -18,24 +18,25 @@ echo Logging output to "$LOG"
 
 export THEANO_FLAGS="floatX=float32,device=gpu,assert_no_cpu_op='raise'"
 
-python3 ./tools/train.py \
-       --cfg ./experiments/cfgs/shapenet_1000.yaml \
-       --cfg ./experiments/cfgs/random_crop.yaml \
-       --cfg ./experiments/cfgs/no_random_background.yaml \
-       --cfg ./experiments/cfgs/max_5_views.yaml \
-       --cfg ./experiments/cfgs/local_shapenet_64.yaml \
-       --cfg ./experiments/cfgs/batch_size_12.yaml \
-       --weights output/$NET_NAME/max_5_views_no_rnd_bg/weights.npy \
-       --out $OUT_PATH \
-       --model $NET_NAME \
-       ${*:1}
+python main.py \
+      --batch-size 12 \
+      --cfg ./experiments/cfgs/shapenet_1000.yaml \
+      --cfg ./experiments/cfgs/random_crop.yaml \
+      --cfg ./experiments/cfgs/no_random_background.yaml \
+      --cfg ./experiments/cfgs/max_5_views.yaml \
+      --cfg ./experiments/cfgs/local_shapenet_64.yaml \
+      --out $OUT_PATH \
+      --model $NET_NAME \
+      ${*:1}
 
-python3 ./tools/test.py \
-       --cfg ./experiments/cfgs/shapenet_1000.yaml \
-       --cfg ./experiments/cfgs/no_random_background.yaml \
-       --cfg ./experiments/cfgs/max_5_views.yaml \
-       --cfg ./experiments/cfgs/local_shapenet_64.yaml \
-       --cfg ./experiments/cfgs/batch_size_12.yaml \
-       --weights $OUT_PATH/weights.npy \
-       --model $NET_NAME \
+python main.py \
+      --test \
+      --batch-size 12 \
+      --cfg ./experiments/cfgs/shapenet_1000.yaml \
+      --cfg ./experiments/cfgs/no_random_background.yaml \
+      --cfg ./experiments/cfgs/max_5_views.yaml \
+      --cfg ./experiments/cfgs/local_shapenet_64.yaml \
+      --weights $OUT_PATH/weights.npy \
+      --model $NET_NAME \
+      --out $OUT_PATH \
        ${*:1}

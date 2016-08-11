@@ -8,7 +8,7 @@ from models.net import Net, tensor5
 from lib.layers import TensorProductLayer, ConvLayer, PoolLayer, Unpool3DLayer, \
     LeakyReLU, SoftmaxWithLoss3D, Conv3DLayer, InputLayer, FlattenLayer, \
     FCConv3DLayer, TanhLayer, SigmoidLayer, ComplementLayer, AddLayer, \
-    EltwiseMultiplyLayer
+    EltwiseMultiplyLayer, trainable_params
 
 
 class RecNet(Net):
@@ -146,13 +146,8 @@ class RecNet(Net):
         pred_all = s_update_pred[2]
         softmax_loss = SoftmaxWithLoss3D(pred_all[-1])
 
-        params = conv1.params + conv2.params + conv3.params + conv4.params + \
-            conv5.params + conv6.params + fc7.params + \
-            t_x_s_update.params + t_x_s_reset.params + t_x_rs.params + \
-            conv7.params + conv8.params + conv9.params + conv10.params + conv11.params
-
         self.loss = softmax_loss.loss(self.y)
         self.error = softmax_loss.error(self.y)
-        self.params = params
+        self.params = trainable_params
         self.output = softmax_loss.prediction()
         self.activations = [update_all, pred_all]
