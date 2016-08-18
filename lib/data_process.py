@@ -186,10 +186,7 @@ class ReconstructionDataProcess(DataProcess):
             t_im = image_transform(im_rgb, cfg.TRAIN.PAD_X, cfg.TRAIN.PAD_Y)
 
         # Preprocessing
-        if cfg.TRAIN.PREPROCESSING_TYPE == 'center':
-            t_im = t_im - cfg.CONST.IMAGE_MEAN
-        elif cfg.TRAIN.PREPROCESSING_TYPE == 'scale':
-            t_im = t_im / 255.
+        t_im = t_im / 255.
 
         return t_im
 

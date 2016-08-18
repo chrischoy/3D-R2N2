@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 import sys
+import os.path as osp
+
+sys.path.insert(0, osp.join(osp.dirname(__file__), 'lib'))
+
 import numpy as np
 import argparse
 import pprint

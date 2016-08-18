@@ -1,7 +1,0 @@
-DIR:
-  MODEL_PATH: '/home/chrischoy/dataset/ShapeNet/ShapeNetCore.v1/%s/%s/model.obj'
-  RENDERING_PATH: '/home/chrischoy/dataset/ShapeNet/ShapeNetRendering/%s/%s/rendering'
-  VOXEL_PATH: '/home/chrischoy/dataset/ShapeNet/ShapeNetVox32/%s/%s/model.binvox'
-PASCAL:
-  VOC2012_DIR: '/home/chrischoy/dataset/VOC2012/'
-

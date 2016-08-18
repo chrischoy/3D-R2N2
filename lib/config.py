@@ -1,4 +1,3 @@
-import numpy as np
 from easydict import EasyDict as edict
 
 __C = edict()
@@ -10,7 +9,7 @@ cfg = __C
 # Common
 #
 __C.SUB_CONFIG_FILE = []
-__C.DATASET = '/cvgl/group/ShapeNet/ShapeNetCore.v1/cat1000.json'  # yaml/json file that specifies a dataset (training/testing)
+__C.DATASET = './experiments/dataset/shapenet_1000.json'  # yaml/json file that specifies a dataset (training/testing)
 __C.NET_NAME = 'reconstruction_net'
 __C.PROFILE = False
 
@@ -23,18 +22,17 @@ __C.CONST.N_VOX = 32
 __C.CONST.N_VIEWS = 1
 __C.CONST.BATCH_SIZE = 36
 __C.CONST.RECNET = 'rec_net'
-__C.CONST.WEIGHTS = '/scratch/chrischoy/mv_deep_res_gru_net_3x3x3/max_5_views_no_rnd_bg/weights.npy.39999.npy'  # when set, load the weights from the file
-__C.CONST.IMAGE_MEAN = np.load('./models/data/shapenet_mean.npz')['mean']
+__C.CONST.WEIGHTS = ''  # when set, load the weights from the file
 
 #
 # Directories
 #
 __C.DIR = edict()
 # Path where taxonomy.json is stored
-__C.DIR.MODEL_ROOT_PATH = '/cvgl/group/ShapeNet/ShapeNetCore.v1/'
-__C.DIR.MODEL_PATH = '/cvgl/group/ShapeNet/ShapeNetCore.v1/%s/%s/model.obj'
-__C.DIR.VOXEL_PATH = '/cvgl/group/ShapeNet/ShapeNetCore.v1/%s/%s/model.binvox'
-__C.DIR.RENDERING_PATH = '/cvgl/group/ShapeNet/ShapeNetCore.v1/%s/%s/rendering'
+__C.DIR.SHAPENET_QUERY_PATH = './ShapeNet/ShapeNetVox32/'
+__C.DIR.MODEL_PATH = './ShapeNet/ShapeNetCore.v1/%s/%s/model.obj'
+__C.DIR.VOXEL_PATH = './ShapeNet/ShapeNetVox32/%s/%s/model.binvox'
+__C.DIR.RENDERING_PATH = './ShapeNet/ShapeNetRendering/%s/%s/rendering'
 __C.DIR.OUT_PATH = './output/default'
 
 #
@@ -43,7 +41,7 @@ __C.DIR.OUT_PATH = './output/default'
 __C.TRAIN = edict()
 
 __C.TRAIN.RESUME_TRAIN = False
-__C.TRAIN.INITIAL_ITERATION = 30000  # when the training resumes, set the iteration number
+__C.TRAIN.INITIAL_ITERATION = 60000  # when the training resumes, set the iteration number
 __C.TRAIN.USE_REAL_IMG = False
 __C.TRAIN.DATASET_PORTION = [0, 0.8]
 
@@ -87,14 +85,6 @@ __C.TRAIN.LOSS_LIMIT = 2  # stop training if the loss exceeds the limit
 __C.TRAIN.SAVE_FREQ = 10000   # weights will be overwritten every save_freq
 __C.TRAIN.PRINT_FREQ = 40
 
-###############################################################################
-# WARNING
-# You cannot use the scale trained model for centered model
-# Scale: scale 1/255
-# Center: subtract mean from the image
-###############################################################################
-__C.TRAIN.PREPROCESSING_TYPE = 'scale' # ['scale', 'center']
-
 #
 # Testing options
 #
@@ -111,40 +101,6 @@ __C.TEST.NO_BG_COLOR_RANGE = [[240, 240], [240, 240], [240, 240]]
 __C.TEST.VISUALIZE = False
 __C.TEST.VOXEL_THRESH = [0.4]
 
-#
-# Rendering
-#
-__C.RENDERING = edict()
-__C.RENDERING.RENDERING_ENGINE = 'blender'  # ['blender', 'osg', 'prerender']
-__C.RENDERING.USE_PRERENDERING = True
-__C.RENDERING.MAX_CAMERA_DIST = 1.75
-__C.RENDERING.RENDERED_IMG_LIST = 'renderings.txt'  # File where list of rendered images will be written.
-__C.RENDERING.RENDERED_IMG_METADATA = 'rendering_metadata.txt'  # File where metadata of corresponding rendered images will be written.
-__C.RENDERING.BLENDER_TMP_DIR = '/tmp/'
-
-
-#
-# Pascal dataset
-#
-__C.PASCAL = edict()
-__C.PASCAL.VOC2012_DIR = '/cvgl/group/VOC2012'  # Directory with VOC2012 dataset.
-__C.PASCAL.BLACKLIST_CLASSES = ('aeroplane', 'boat', 'bus', 'car', 'chair',
-                                'diningtable', 'sofa', 'tvmonitor')  # Classes to avoid.
-__C.PASCAL.CLASSES_DIR = 'ImageSets/Main'  # Directory with image class informations.
-__C.PASCAL.IMGS_DIR = 'JPEGImages'  # Directory with datset images.
-# Files with information about image classes.
-__C.PASCAL.CLASSES_FILES = ('_val.txt', '_train.txt', '_trainval.txt')
-
-__C.PASCAL3D = edict()
-# Classes to use for evaluation. Comes from CategoryShape.
-__C.PASCAL3D.EVAL_CLASSES = ('aeroplane', 'bicycle', 'boat', 'bus', 'car',
-                             'chair', 'motorbike', 'sofa', 'train', 'tvmonitor')
-# Directory with voxelized PASCAL3D.
-__C.PASCAL3D.VOXEL_DIR = '/cvgl/group/3DEverything/evaluation/pascal3d_voxel'
-# File with train/test metadata of PASCAL3D, just as in akar43/CategoryShapes.
-__C.PASCAL3D.EVAL_METADATA = '/cvgl/group/3DEverything/evaluation/pascal_metadata.mat'
-# Directory with PASCAL3D+_release1.0 annotation. 2.0 doesn't work.
-__C.PASCAL3D.ANNOTATION = '/cvgl/group/3DEverything/evaluation/PASCAL3D+_release1.0/Annotations'
 
 def _merge_a_into_b(a, b):
     """Merge config dictionary a into config dictionary b, clobbering the

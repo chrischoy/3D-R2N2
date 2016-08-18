@@ -21,22 +21,13 @@ export THEANO_FLAGS="floatX=float32,device=gpu,assert_no_cpu_op='raise'"
 python main.py \
       --batch-size 24 \
       --iter 60000 \
-      --cfg ./experiments/cfgs/shapenet_1000.yaml \
-      --cfg ./experiments/cfgs/random_crop.yaml \
-      --cfg ./experiments/cfgs/no_random_background.yaml \
-      --cfg ./experiments/cfgs/max_5_views.yaml \
-      --cfg ./experiments/cfgs/local_shapenet.yaml \
       --out $OUT_PATH \
       --model $NET_NAME \
       ${*:1}
 
 python main.py \
       --test \
-      --batch-size 24 \
-      --cfg ./experiments/cfgs/shapenet_1000.yaml \
-      --cfg ./experiments/cfgs/no_random_background.yaml \
-      --cfg ./experiments/cfgs/max_5_views.yaml \
-      --cfg ./experiments/cfgs/local_shapenet.yaml \
+      --batch-size 1 \
       --out $OUT_PATH \
       --weights $OUT_PATH/weights.npy \
       --model $NET_NAME \

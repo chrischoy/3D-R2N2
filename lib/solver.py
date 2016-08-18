@@ -142,18 +142,18 @@ class Solver(object):
             if self.net.is_x_tensor4:
                 batch_img = batch_img[0]
 
-            # Decrease learning rate at certain points
-            if train_ind in lr_steps:
-                # edict only takes string for key. Hacky way
-                self.set_lr(np.float(cfg.TRAIN.LEARNING_RATES[str(train_ind)]))
-                print('Learing rate decreased to %f: ' % self.lr.get_value())
-
             # Apply one gradient step
             train_timer.tic()
             loss = self.train_loss(batch_img, batch_voxel)
             train_timer.toc()
 
             training_losses.append(loss)
+
+            # Decrease learning rate at certain points
+            if train_ind in lr_steps:
+                # edict only takes string for key. Hacky way
+                self.set_lr(np.float(cfg.TRAIN.LEARNING_RATES[str(train_ind)]))
+                print('Learing rate decreased to %f: ' % self.lr.get_value())
 
             # Debugging modules
             #
