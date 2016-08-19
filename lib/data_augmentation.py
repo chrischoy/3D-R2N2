@@ -37,25 +37,6 @@ def crop_center(im, new_height, new_width):
     return im[top:bottom, left:right]
 
 
-def add_random_background(im, background_img_fns):
-    """
-    Given PIL.Image object with alpha channel, and a list of background file
-    names, return image with a background.
-    """
-    bg_im = Image.open(np.random.choice(background_img_fns))
-    while bg_im.height < im.height or bg_im.width < im.width:
-        bg_im = Image.open(np.random.choice(background_img_fns))
-
-    # Randomly crop background to the size of the training image.
-    crop_x = np.random.randint(bg_im.width - im.width)
-    crop_y = np.random.randint(bg_im.height - im.height)
-    blended_im = bg_im.crop((crop_x, crop_y,
-                             crop_x + im.width,
-                             crop_y + im.height))
-    blended_im.paste(im, (0, 0), im)
-    return blended_im
-
-
 def add_random_color_background(im, color_range):
     r, g, b = [np.random.randint(color_range[i][0], color_range[i][1] + 1) for i in range(3)]
 

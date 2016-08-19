@@ -9,6 +9,10 @@ from theano.tensor.signal import downsample
 
 
 trainable_params = []
+def get_trainable_params():
+    global trainable_params
+    return trainable_params
+
 
 class Weight(object):
     def __init__(self, w_shape, is_bias, mean=0, std=0.01, filler='msra',

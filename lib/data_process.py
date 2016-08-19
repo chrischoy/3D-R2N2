@@ -14,9 +14,8 @@ from six.moves import queue
 from multiprocessing import Process, Event
 
 from lib.config import cfg
-from lib.data_augmentation import image_transform, add_random_background, \
-    add_random_color_background, crop_center
-from lib.data_io import get_model_file, get_voxel_file, get_rendering_file, get_voc2012_imglist
+from lib.data_augmentation import image_transform, add_random_color_background, crop_center
+from lib.data_io import get_model_file, get_voxel_file, get_rendering_file
 from lib.voxel import voxelize_model_binvox
 
 import tools.binvox_rw as binvox_rw
@@ -173,11 +172,7 @@ class ReconstructionDataProcess(DataProcess):
         im = Image.open(image_fn)
 
         # add random background
-        if len(self.background_imgs) > 0 and \
-                np.random.rand(1) > cfg.TRAIN.SIMPLE_BACKGROUND_RATIO:
-            im = add_random_background(im, self.background_imgs)
-        else:
-            im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE)
+        im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE)
 
         im_rgb = np.array(im)[:, :, :3]
         if self.crop_center:
@@ -225,10 +220,7 @@ def make_data_processes(queue, data_paths, num_workers, repeat=True):
     '''
     processes = []
     for i in range(num_workers):
-        bg_list = []
-        if cfg.TRAIN.RANDOM_BACKGROUND:
-            bg_list = get_voc2012_imglist()
-        process = ReconstructionDataProcess(queue, data_paths, bg_list, repeat=repeat)
+        process = ReconstructionDataProcess(queue, data_paths, repeat=repeat)
         process.start()
         processes.append(process)
     return processes

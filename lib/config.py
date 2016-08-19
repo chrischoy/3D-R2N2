@@ -10,7 +10,7 @@ cfg = __C
 #
 __C.SUB_CONFIG_FILE = []
 __C.DATASET = './experiments/dataset/shapenet_1000.json'  # yaml/json file that specifies a dataset (training/testing)
-__C.NET_NAME = 'reconstruction_net'
+__C.NET_NAME = 'res_gru_net'
 __C.PROFILE = False
 
 __C.CONST = edict()
@@ -21,7 +21,7 @@ __C.CONST.IMG_H = 127
 __C.CONST.N_VOX = 32
 __C.CONST.N_VIEWS = 1
 __C.CONST.BATCH_SIZE = 36
-__C.CONST.RECNET = 'rec_net'
+__C.CONST.RECNET = 'res_gru_net'
 __C.CONST.WEIGHTS = ''  # when set, load the weights from the file
 
 #

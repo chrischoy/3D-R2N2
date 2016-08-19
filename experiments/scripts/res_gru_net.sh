@@ -6,8 +6,8 @@ set -e
 export PYTHONUNBUFFERED="True"
 
 D="$(dirname $(readlink -f $0))"
-NET_NAME=mv_deep_res_gru_net_3x3x3
-EXP_DETAIL=max_5_views_no_rnd_bg_all_params
+NET_NAME=mv_deep_res_gru_net
+EXP_DETAIL=default_model
 OUT_PATH='./output/'$NET_NAME/$EXP_DETAIL
 LOG="$OUT_PATH/log.`date +'%Y-%m-%d_%H-%M-%S'`"
 

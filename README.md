@@ -7,13 +7,6 @@ This is the source code for the paper `3D-R2N2: A Unified Approach for Single an
 If you find this work useful in your research, please consider citing:
 
 ```
-@article{choy20163d,
-  title={3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction},
-  author={Choy, Christopher B and Xu, Danfei and Gwak, JunYoung and Chen, Kevin and Savarese, Silvio},
-  journal={arXiv preprint arXiv:1604.00449},
-  year={2016}
-}
-
 @inproceedings{choy_eccv16,
   author={Choy, Christopher B and Xu, Danfei and Gwak, JunYoung and Chen, Kevin and Savarese, Silvio},
   title={3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction},
@@ -65,7 +58,7 @@ pip install -r requirements.txt
 - Download trained network weight
 
 ```
-wget asdfasdf
+wget ftp://cs.stanford.edu/cs/cvgl/DeepResGRU.npy
 ```
 
 - run the demo code
@@ -77,25 +70,17 @@ python demo.py
 ### Training the network
 
 - Download datasets and place them in a folder named `ShapeNet`
-  ```
-  mkdir ShapeNet/
-  wget ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz
-  wget ftp://cs.stanford.edu/cs/cvgl/ShapeNetVox32.tgz
-  tar -xzf ShapeNetRendering.tgz -C ShapeNet/
-  tar -xzf ShapeNetVox32.tgz -C ShapeNet/
-  ```
-- Run experiments `bash ./experiments/script/mv_lstm_vec_net.sh`
-
-### Miscellaneous setup
-
-#### GPU Setup
-
-Follow the [instruction](http://deeplearning.net/software/theano/install.html) to setup GPU + Theano.
-
-#### Theano
-
-Install bleeding-edge Theano using
 
 ```
-pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
+mkdir ShapeNet/
+wget ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz
+wget ftp://cs.stanford.edu/cs/cvgl/ShapeNetVox32.tgz
+tar -xzf ShapeNetRendering.tgz -C ShapeNet/
+tar -xzf ShapeNetVox32.tgz -C ShapeNet/
+```
+
+- Run experiments
+
+```
+./experiments/script/mv_deep_res_gru_net.sh
 ```
