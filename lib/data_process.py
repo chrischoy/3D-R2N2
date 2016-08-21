@@ -16,7 +16,6 @@ from multiprocessing import Process, Event
 from lib.config import cfg
 from lib.data_augmentation import preprocess_img
 from lib.data_io import get_model_file, get_voxel_file, get_rendering_file
-from lib.voxel import voxelize_model_binvox
 
 import tools.binvox_rw as binvox_rw
 
@@ -114,7 +113,6 @@ class ReconstructionDataProcess(DataProcess):
                  train=True):
         self.repeat = repeat
         self.train = train
-        self.crop_center = crop_center
         self.background_imgs = background_imgs
         super(ReconstructionDataProcess, self).__init__(
             data_queue, category_model_pair, repeat=repeat)
@@ -177,12 +175,6 @@ class ReconstructionDataProcess(DataProcess):
 
     def load_label(self, category, model_id):
         voxel_fn = get_voxel_file(category, model_id)
-        if not os.path.exists(voxel_fn):
-            model_fn = get_model_file(category, model_id)
-            voxel = voxelize_model_binvox(model_fn, cfg.CONST.N_VOX, True)
-            with open(voxel_fn, 'wb') as f:
-                binvox_rw.write(voxel, f)
-
         with open(voxel_fn, 'rb') as f:
             voxel = binvox_rw.read_as_3d_array(f)
 

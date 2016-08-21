@@ -71,11 +71,11 @@ __C.TRAIN.SIMPLE_BACKGROUND_RATIO = 0.5  # ratio of the simple backgrounded imag
 
 # Learning
 # For SGD use 0.1, for ADAM, use 0.0001
-__C.TRAIN.DEFAULT_LEARNING_RATE = 1e-5
+__C.TRAIN.DEFAULT_LEARNING_RATE = 1e-4
 __C.TRAIN.POLICY = 'adam'  # def: sgd, adam
 # The EasyDict can't use dict with integers as keys
-__C.TRAIN.LEARNING_RATES = {'40000': 1e-6,
-                            '60000': 1e-7}
+__C.TRAIN.LEARNING_RATES = {'20000': 1e-5,
+                            '60000': 1e-6}
 __C.TRAIN.MOMENTUM = 0.90
 # weight decay or regularization constant. If not set, the loss can diverge
 # after the training almost converged since weight can increase indefinitely

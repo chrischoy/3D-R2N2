@@ -43,13 +43,14 @@ def add_random_color_background(im, color_range):
     if isinstance(im, Image.Image):
         im = np.array(im)
 
-    if len(im[0, 0]) < 3:
-        raise ValueError('No Alpha Channel in image')
+    if im.shape[2] > 3:
+        # If the image has the alpha channel, add the background
+        alpha = (np.expand_dims(im[:, :, 3], axis=2) == 0).astype(np.float)
+        im = im[:, :, :3]
+        bg_color = np.array([[[r, g, b]]])
+        im =  alpha * bg_color + (1 - alpha) * im
 
-    alpha = (np.expand_dims(im[:, :, 3], axis=2) == 0).astype(np.float)
-    im = im[:, :, :3]
-    bg_color = np.array([[[r, g, b]]])
-    return alpha * bg_color + (1 - alpha) * im
+    return im
 
 
 def preprocess_img(im, train=True):
@@ -58,13 +59,13 @@ def preprocess_img(im, train=True):
                                      if train else cfg.TEST.NO_BG_COLOR_RANGE)
 
     # If the image has alpha channel, remove it.
-    im_rgb = np.array(im)[:, :, :3]
+    im_rgb = np.array(im)[:, :, :3].astype(np.float32)
     if train:
-        t_im = crop_center(im_rgb, cfg.CONST.IMG_H, cfg.CONST.IMG_W)
-    else:
         t_im = image_transform(im_rgb, cfg.TRAIN.PAD_X, cfg.TRAIN.PAD_Y)
+    else:
+        t_im = crop_center(im_rgb, cfg.CONST.IMG_H, cfg.CONST.IMG_W)
 
-    # Preprocessing
+    # Scale image
     t_im = t_im / 255.
 
     return t_im
