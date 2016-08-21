@@ -8,6 +8,7 @@ import numpy as np
 import argparse
 import pprint
 import logging
+import inspect
 import multiprocessing as mp
 
 # Theano
@@ -89,7 +90,7 @@ def main():
     if args.net_name is not None:
         cfg_from_list(['NET_NAME', args.net_name])
     if args.model_name is not None:
-        cfg_from_list(['CONST.RECNET', args.model_name])
+        cfg_from_list(['CONST.NETWORK_CLASS', args.model_name])
     if args.dataset is not None:
         cfg_from_list(['DATASET', args.dataset])
     if args.exp is not None:
@@ -103,6 +104,9 @@ def main():
 
     print('Using config:')
     pprint.pprint(cfg)
+
+    print('Network definition: \n')
+    print(inspect.getsource(NetClass.setup))
 
     if not args.test:
         train_net()

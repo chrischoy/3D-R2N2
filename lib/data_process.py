@@ -14,7 +14,7 @@ from six.moves import queue
 from multiprocessing import Process, Event
 
 from lib.config import cfg
-from lib.data_augmentation import image_transform, add_random_color_background, crop_center
+from lib.data_augmentation import preprocess_img
 from lib.data_io import get_model_file, get_voxel_file, get_rendering_file
 from lib.voxel import voxelize_model_binvox
 
@@ -111,8 +111,9 @@ class ReconstructionDataProcess(DataProcess):
                  category_model_pair,
                  background_imgs=[],
                  repeat=True,
-                 crop_center=False):
+                 train=True):
         self.repeat = repeat
+        self.train = train
         self.crop_center = crop_center
         self.background_imgs = background_imgs
         super(ReconstructionDataProcess, self).__init__(
@@ -133,7 +134,7 @@ class ReconstructionDataProcess(DataProcess):
             db_inds = self.get_next_minibatch()
 
             # We will sample # views
-            if cfg.TRAIN.RANDOM_NUM_VIEWS:
+            if self.train and cfg.TRAIN.RANDOM_NUM_VIEWS:
                 curr_n_views = np.random.randint(n_views) + 1
             else:
                 curr_n_views = n_views
@@ -171,18 +172,7 @@ class ReconstructionDataProcess(DataProcess):
         image_fn = get_rendering_file(category, model_id, image_id)
         im = Image.open(image_fn)
 
-        # add random background
-        im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE)
-
-        im_rgb = np.array(im)[:, :, :3]
-        if self.crop_center:
-            t_im = crop_center(im_rgb, cfg.CONST.IMG_H, cfg.CONST.IMG_W)
-        else:
-            t_im = image_transform(im_rgb, cfg.TRAIN.PAD_X, cfg.TRAIN.PAD_Y)
-
-        # Preprocessing
-        t_im = t_im / 255.
-
+        t_im = preprocess_img(im, self.train)
         return t_im
 
     def load_label(self, category, model_id):
@@ -214,13 +204,13 @@ def kill_processes(queue, processes):
         p.terminate()
 
 
-def make_data_processes(queue, data_paths, num_workers, repeat=True):
+def make_data_processes(queue, data_paths, num_workers, repeat=True, train=True):
     '''
     Make a set of data processes for parallel data loading.
     '''
     processes = []
     for i in range(num_workers):
-        process = ReconstructionDataProcess(queue, data_paths, repeat=repeat)
+        process = ReconstructionDataProcess(queue, data_paths, repeat=repeat, train=train)
         process.start()
         processes.append(process)
     return processes

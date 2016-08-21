@@ -1,7 +1,7 @@
-import importlib
 from multiprocessing import Queue
 
 # Training related functions
+from models import load_model
 from lib.config import cfg
 from lib.solver import Solver
 from lib.data_io import category_model_id_pair
@@ -30,23 +30,16 @@ def cleanup_handle(func):
 @cleanup_handle
 def train_net():
     '''Main training function'''
-    # Training
-    # set up model
-    netlib = importlib.import_module("models.%s" % (cfg.CONST.RECNET))
-
-    # print network definition
-    print('Print network definition\n')
-    with open('models/%s.py' % cfg.CONST.RECNET, 'r') as f:
-        print(''.join(f.readlines()))
-
-    # Define the network and the solver
-    net = netlib.RecNet()
+    # Set up the model and the solver
+    NetClass = load_model(cfg.CONST.NETWORK_CLASS)
+    net = NetClass()
 
     # Check that single view reconstruction net is not used for multi view
     # reconstruction.
     if net.is_x_tensor4 and cfg.CONST.N_VIEWS > 1:
-        raise ValueError('Do not set the config.CONST.N_VIEWS > 1 when using \
-                         single-view reconstruction network')
+        raise ValueError('Do not set the config.CONST.N_VIEWS > 1 when using' \
+                         'single-view reconstruction network')
+
     # Generate the solver
     solver = Solver(net)
 
@@ -67,7 +60,9 @@ def train_net():
     val_processes = make_data_processes(
         val_queue,
         category_model_id_pair(dataset_portion=cfg.TEST.DATASET_PORTION),
-        1, repeat=True)
+        1,
+        repeat=True,
+        train=False)
 
     # Train the network
     solver.train(train_queue, val_queue)

@@ -11,7 +11,7 @@ from lib.layers import TensorProductLayer, ConvLayer, PoolLayer, Unpool3DLayer, 
     EltwiseMultiplyLayer, get_trainable_params
 
 
-class RecNet(Net):
+class ResidualGRUNet(Net):
     def network_definition(self):
 
         # (multi_views, self.batch_size, 3, self.img_h, self.img_w),

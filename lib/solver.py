@@ -211,6 +211,7 @@ class Solver(object):
         # Cache the output function.
         if self._test_output is None:
             print('Compiling testing function')
+            # Lazy load the test function
             self._test_output = theano.function([self.net.x, self.net.y],
                                                 [self.net.output, self.net.loss])
 

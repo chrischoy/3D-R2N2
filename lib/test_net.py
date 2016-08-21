@@ -1,10 +1,10 @@
 import os
-import importlib
 import numpy as np
 import scipy.io as sio
 from multiprocessing import Queue
 
 # Theano & network
+from models import load_model
 from lib.config import cfg
 from lib.solver import Solver
 from lib.data_io import category_model_id_pair
@@ -24,8 +24,8 @@ def test_net():
     print("Exp file will be written to: " + result_fn)
 
     # Make a network and load weights
-    netlib = importlib.import_module("models.%s" % (cfg.CONST.RECNET))
-    net = netlib.RecNet(compute_grad=False)
+    NetworkClass = load_model(cfg.CONST.NETWORK_CLASS)
+    net = NetworkClass(compute_grad=False)
     net.load(cfg.CONST.WEIGHTS)
     solver = Solver(net)
 
@@ -36,7 +36,7 @@ def test_net():
     # process will return one batch at a time.
     queue = Queue(cfg.QUEUE_SIZE)
     data_pair = category_model_id_pair(dataset_portion=cfg.TEST.DATASET_PORTION)
-    processes = make_data_processes(queue, data_pair, 1, repeat=False)
+    processes = make_data_processes(queue, data_pair, 1, repeat=False, train=False)
     num_data = len(processes[0].data_paths)
     num_batch = int(num_data / batch_size)
 

@@ -1,11 +1,4 @@
-import _init_paths
-import os
 import numpy as np
-
-from lib.utils import stdout_redirected
-from tempfile import TemporaryFile
-
-import tools.binvox_rw as binvox_rw
 
 
 def evaluate_voxel_prediction(preds, gt, thresh):
@@ -18,20 +11,65 @@ def evaluate_voxel_prediction(preds, gt, thresh):
     return np.array([diff, intersection, union, num_fp, num_fn])
 
 
-def voxelize_model_binvox(obj, n_vox, return_voxel=True, binvox_add_param=''):
-    cmd = "./tools/binvox -d %d -cb -dc -aw -pb %s -t binvox %s" % (
-            n_vox, binvox_add_param, obj)
+def voxel2mesh(voxels):
+    cube_verts = [[0, 0, 0],
+                  [0, 0, 1],
+                  [0, 1, 0],
+                  [0, 1, 1],
+                  [1, 0, 0],
+                  [1, 0, 1],
+                  [1, 1, 0],
+                  [1, 1, 1]]  # 8 points
 
-    if not os.path.exists(obj):
-        raise ValueError('No obj found : %s' % obj)
+    cube_faces = [[0, 1, 2],
+                  [1, 3, 2],
+                  [2, 3, 6],
+                  [3, 7, 6],
+                  [0, 2, 6],
+                  [0, 6, 4],
+                  [0, 5, 1],
+                  [0, 4, 5],
+                  [6, 7, 5],
+                  [6, 5, 4],
+                  [1, 7, 3],
+                  [1, 5, 7]]  # 12 face
 
-    # Stop printing command line output
-    with TemporaryFile() as f, stdout_redirected(f):
-        os.system(cmd)
+    cube_verts = np.array(cube_verts)
+    cube_faces = np.array(cube_faces) + 1
 
-    # load voxelized model
-    if return_voxel:
-        with open('%s.binvox' % obj[:-4], 'rb') as f:
-            vox = binvox_rw.read_as_3d_array(f)
+    l, m, n = voxels.shape
 
-        return vox.data
+    scale = 0.01
+    cube_dist_scale = 1.1
+    verts = []
+    faces = []
+    curr_vert = 0
+    for i in range(l):
+        for j in range(m):
+            for k in range(n):
+                # If there is a non-empty voxel
+                if voxels[i, j, k] > 0:
+                    verts.extend(scale * (cube_verts + cube_dist_scale * np.array([[i, j, k]])))
+                    faces.extend(cube_faces + curr_vert)
+                    curr_vert += len(cube_verts)
+
+    return np.array(verts), np.array(faces)
+
+
+def write_obj(filename, verts, faces):
+    """ write the verts and faces on file."""
+    with open(filename, 'w') as f:
+        # write vertices
+        f.write('g\n# %d vertex\n' % len(verts))
+        for vert in verts:
+            f.write('v %f %f %f\n' % tuple(vert))
+
+        # write faces
+        f.write('# %d faces\n' % len(faces))
+        for face in faces:
+            f.write('f %d %d %d\n' % tuple(face))
+
+
+def voxel2obj(filename, pred):
+    verts, faces = voxel2mesh(pred)
+    write_obj(filename, verts, faces)

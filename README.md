@@ -1,4 +1,4 @@
-# 3D-R2N2: Recurrent Reconstruction Neural Network
+# 3D-R2N2: 3D Recurrent Reconstruction Neural Network
 
 This is the source code for the paper `3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016`. Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D.
 
@@ -22,11 +22,15 @@ If you find this work useful in your research, please consider citing:
 
 Traditionally, single view reconstruction and multi view reconstruction are disjoint problmes that has been dealt using different approaches. In this work, we first propose a unified framework for both single and multi view reconstruction using a `3D Recurrent Reconstruction Neural Network` (3D-R2N2).
 
-| Schematics of `3D-Convolutional LSTM` | Inputs for each cell         |
-|:-------------------------------------:|:----------------------------:|
-| ![3D-LSTM](imgs/lstm.png)             |![3D-LSTM](imgs/lstm_time.png)|
+| Schematic of `3D-Convolutional LSTM` | Inputs (red cells + feature) for each cell (purple)|
+|:------------------------------------:|:--------------------------------------------------:|
+| ![3D-LSTM](imgs/lstm.png)            | ![3D-LSTM](imgs/lstm_time.png)                     |
 
-We can feed images in a random order but the network is invariant to the order. The ciritical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self occluded (please refer to [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/) for the supplementary material for analysis).
+We can feed in images a random order since the network is trained to be invariant to the order. The ciritical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self occluded (please refer to [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/) for the supplementary material for analysis).
+
+![Networks](imgs/full_network.png)
+*We used two different types of networks for the experiments: a shallow network (top) and a deep residual network (bottom).*
+
 
 ## Datasets
 
@@ -34,6 +38,7 @@ We used [ShapeNet](http://shapenet.cs.stanford.edu) models to generated rendered
 
 - ShapeNet rendered images [ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz](ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz)
 - ShapeNet voxelized models [ftp://cs.stanford.edu/cs/cvgl/ShapeNetVox32.tgz](ftp://cs.stanford.edu/cs/cvgl/ShapeNetVox32.tgz)
+
 
 ## Installation
 
@@ -79,8 +84,8 @@ tar -xzf ShapeNetRendering.tgz -C ShapeNet/
 tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 ```
 
-- Run experiments
+- Train and test the network using a shell script
 
 ```
-./experiments/script/mv_deep_res_gru_net.sh
+./experiments/script/res_gru_net.sh
 ```

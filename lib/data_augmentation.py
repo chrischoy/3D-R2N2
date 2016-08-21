@@ -52,6 +52,24 @@ def add_random_color_background(im, color_range):
     return alpha * bg_color + (1 - alpha) * im
 
 
+def preprocess_img(im, train=True):
+    # add random background
+    im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE
+                                     if train else cfg.TEST.NO_BG_COLOR_RANGE)
+
+    # If the image has alpha channel, remove it.
+    im_rgb = np.array(im)[:, :, :3]
+    if train:
+        t_im = crop_center(im_rgb, cfg.CONST.IMG_H, cfg.CONST.IMG_W)
+    else:
+        t_im = image_transform(im_rgb, cfg.TRAIN.PAD_X, cfg.TRAIN.PAD_Y)
+
+    # Preprocessing
+    t_im = t_im / 255.
+
+    return t_im
+
+
 def test(fn):
     import matplotlib.pyplot as plt
     cfg.TRAIN.RANDOM_CROP = True

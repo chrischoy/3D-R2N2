@@ -6,7 +6,7 @@ set -e
 export PYTHONUNBUFFERED="True"
 
 D="$(dirname $(readlink -f $0))"
-NET_NAME=mv_deep_res_gru_net
+NET_NAME=ResidualGRUNet
 EXP_DETAIL=default_model
 OUT_PATH='./output/'$NET_NAME/$EXP_DETAIL
 LOG="$OUT_PATH/log.`date +'%Y-%m-%d_%H-%M-%S'`"
