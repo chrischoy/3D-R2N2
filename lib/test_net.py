@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import scipy.io as sio
+import inspect
 from multiprocessing import Queue
 
 # Theano & network
@@ -25,6 +26,8 @@ def test_net():
 
     # Make a network and load weights
     NetworkClass = load_model(cfg.CONST.NETWORK_CLASS)
+    print('Network definition: \n')
+    print(inspect.getsource(NetworkClass.network_definition))
     net = NetworkClass(compute_grad=False)
     net.load(cfg.CONST.WEIGHTS)
     solver = Solver(net)

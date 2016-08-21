@@ -1,3 +1,4 @@
+import inspect
 from multiprocessing import Queue
 
 # Training related functions
@@ -32,6 +33,8 @@ def train_net():
     '''Main training function'''
     # Set up the model and the solver
     NetClass = load_model(cfg.CONST.NETWORK_CLASS)
+    print('Network definition: \n')
+    print(inspect.getsource(NetClass.network_definition))
     net = NetClass()
 
     # Check that single view reconstruction net is not used for multi view

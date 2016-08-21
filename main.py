@@ -8,7 +8,6 @@ import numpy as np
 import argparse
 import pprint
 import logging
-import inspect
 import multiprocessing as mp
 
 # Theano
@@ -104,9 +103,6 @@ def main():
 
     print('Using config:')
     pprint.pprint(cfg)
-
-    print('Network definition: \n')
-    print(inspect.getsource(NetClass.setup))
 
     if not args.test:
         train_net()
