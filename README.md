@@ -1,4 +1,4 @@
-# 3D-R2N2: 3D Recurrent Reconstruction Neural Network
+# 3D-R<sup>2</sup>N<sup>2</sup>: 3D Recurrent Reconstruction Neural Network
 
 This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D.
 
@@ -60,9 +60,9 @@ source py3/bin/activate
 pip install -r requirements.txt
 ```
 
-- Follow the installation instruction for `cuDNN` theano on [instruction](http://deeplearning.net/software/theano/library/sandbox/cuda/dnn.html)
+- Follow the `cuDNN` installation instruction for theano on the [instruction](http://deeplearning.net/software/theano/library/sandbox/cuda/dnn.html)
 
-- run the demo code
+- Run the demo code
 
 ```
 python demo.py
