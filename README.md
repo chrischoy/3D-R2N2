@@ -72,6 +72,12 @@ wget ftp://cs.stanford.edu/cs/cvgl/DeepResGRU.npy
 python demo.py
 ```
 
+The demo code takes 3 images of the same chair and generate the following reconstruction.
+
+| Image 1 | Image 2 | Image 3 | Reconstruction |
+|:-------:|:-------:|:-------:|:-------:|
+| ![](imgs/0.png) | ![](imgs/1.png) | ![](imgs/2.png) | ![](imgs/pred.png) |
+
 ### Training the network
 
 - Download datasets and place them in a folder named `ShapeNet`

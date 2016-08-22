@@ -51,7 +51,7 @@ def main():
     # Save the prediction as an OBJ file.
     # Use meshlab or other mesh viewers to visualize the prediction.
     # For Ubuntu>=14.04, you can install meshlab using `sudo apt-get install meshlab`
-    voxel2obj('prediction.obj', pred[0, :, 1, :, :])
+    voxel2obj('prediction.obj', pred[0, :, 1, :, :] > 0.4)
     call(['meshlab', 'prediction.obj'])
 
 
