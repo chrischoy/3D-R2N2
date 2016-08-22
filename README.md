@@ -1,6 +1,6 @@
 # 3D-R2N2: 3D Recurrent Reconstruction Neural Network
 
-This repository contains the source code of the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D.
+This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D.
 
 ## Citing this work
 
@@ -72,7 +72,7 @@ The demo code takes 3 images of the same chair and generates the following recon
 
 | Image 1 | Image 2 | Image 3 | Reconstruction |
 |:-------:|:-------:|:-------:|:-------:|
-| ![](imgs/0.png) | ![](imgs/1.png) | ![](imgs/2.png) | ![](imgs/pred.png) |
+| ![](imgs/0.png) | ![](imgs/1.png) | ![](imgs/2.png) | <img src="https://github.com/chrischoy/3D-R2N2/blob/master/imgs/pred.png" height="127px"> |
 
 ### Training the network
 
@@ -86,7 +86,7 @@ tar -xzf ShapeNetRendering.tgz -C ShapeNet/
 tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 ```
 
-- Train and test the network using a shell script
+- Train and test the network using the training shell script
 
 ```
 ./experiments/script/res_gru_net.sh
