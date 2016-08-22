@@ -60,13 +60,15 @@ source py3/bin/activate
 pip install -r requirements.txt
 ```
 
+- Follow the installation instruction for `cuDNN` theano on [instruction](http://deeplearning.net/software/theano/library/sandbox/cuda/dnn.html)
+
 - run the demo code
 
 ```
 python demo.py
 ```
 
-The demo code takes 3 images of the same chair and generate the following reconstruction.
+The demo code takes 3 images of the same chair and generates the following reconstruction.
 
 | Image 1 | Image 2 | Image 3 | Reconstruction |
 |:-------:|:-------:|:-------:|:-------:|
