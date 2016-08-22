@@ -60,12 +60,6 @@ source py3/bin/activate
 pip install -r requirements.txt
 ```
 
-- Download trained network weight
-
-```
-wget ftp://cs.stanford.edu/cs/cvgl/DeepResGRU.npy
-```
-
 - run the demo code
 
 ```
