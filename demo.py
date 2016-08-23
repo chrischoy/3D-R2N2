@@ -18,8 +18,8 @@ def download_model(fn):
     if not os.path.isfile(fn):
         # Download the file if doewn't exist
         print('Downloading a pretrained model')
-        call(['curl',  'ftp://cs.stanford.edu/cs/cvgl/ResidualGRUNet.npy',
-              '--create-dirs', '-o', fn])
+        call(['curl', 'ftp://cs.stanford.edu/cs/cvgl/ResidualGRUNet.npy', '--create-dirs', '-o',
+              fn])
 
 
 def load_demo_images():

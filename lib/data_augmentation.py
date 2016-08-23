@@ -10,15 +10,14 @@ def image_transform(img, crop_x, crop_y, crop_loc=None, color_tint=None):
 
     # Slight translation
     if cfg.TRAIN.RANDOM_CROP and not crop_loc:
-        crop_loc = [np.random.randint(0, crop_y),
-                    np.random.randint(0, crop_x)]
+        crop_loc = [np.random.randint(0, crop_y), np.random.randint(0, crop_x)]
 
     if crop_loc:
         cr, cc = crop_loc
         height, width, _ = img.shape
         img_h = height - crop_y
         img_w = width - crop_x
-        img = img[cr:cr+img_h, cc:cc+img_w]
+        img = img[cr:cr + img_h, cc:cc + img_w]
         # depth = depth[cr:cr+img_h, cc:cc+img_w]
 
     if cfg.TRAIN.FLIP and np.random.rand() > 0.5:
@@ -28,12 +27,12 @@ def image_transform(img, crop_x, crop_y, crop_loc=None, color_tint=None):
 
 
 def crop_center(im, new_height, new_width):
-    height = im.shape[0]   # Get dimensions
+    height = im.shape[0]  # Get dimensions
     width = im.shape[1]
-    left = (width - new_width)/2
-    top = (height - new_height)/2
-    right = (width + new_width)/2
-    bottom = (height + new_height)/2
+    left = (width - new_width) / 2
+    top = (height - new_height) / 2
+    right = (width + new_width) / 2
+    bottom = (height + new_height) / 2
     return im[top:bottom, left:right]
 
 
@@ -48,15 +47,15 @@ def add_random_color_background(im, color_range):
         alpha = (np.expand_dims(im[:, :, 3], axis=2) == 0).astype(np.float)
         im = im[:, :, :3]
         bg_color = np.array([[[r, g, b]]])
-        im =  alpha * bg_color + (1 - alpha) * im
+        im = alpha * bg_color + (1 - alpha) * im
 
     return im
 
 
 def preprocess_img(im, train=True):
     # add random background
-    im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE
-                                     if train else cfg.TEST.NO_BG_COLOR_RANGE)
+    im = add_random_color_background(im, cfg.TRAIN.NO_BG_COLOR_RANGE if train else
+                                     cfg.TEST.NO_BG_COLOR_RANGE)
 
     # If the image has alpha channel, remove it.
     im_rgb = np.array(im)[:, :, :3].astype(np.float32)

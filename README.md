@@ -1,4 +1,4 @@
-# 3D-R2N2: 3D Recurrent Reconstruction Neural Network
+# 3D-R<sup>2</sup>N<sup>2</sup>: 3D Recurrent Reconstruction Neural Network
 
 This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D.
 
@@ -22,9 +22,9 @@ If you find this work useful in your research, please consider citing:
 
 Traditionally, single view reconstruction and multi view reconstruction are disjoint problmes that has been dealt using different approaches. In this work, we first propose a unified framework for both single and multi view reconstruction using a `3D Recurrent Reconstruction Neural Network` (3D-R2N2).
 
-| Schematic of `3D-Convolutional LSTM` | Inputs (red cells + feature) for each cell (purple)|
-|:------------------------------------:|:--------------------------------------------------:|
-| ![3D-LSTM](imgs/lstm.png)            | ![3D-LSTM](imgs/lstm_time.png)                     |
+| The schematic of the `3D-Convolutional LSTM` | Inputs (red cells + feature) for each cell (purple) |
+|:--------------------------------------------:|:---------------------------------------------------:|
+| ![3D-LSTM](imgs/lstm.png)                    | ![3D-LSTM](imgs/lstm_time.png)                      |
 
 We can feed in images a random order since the network is trained to be invariant to the order. The ciritical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self occluded (please refer to [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/) for the supplementary material for analysis).
 
@@ -50,7 +50,7 @@ The package requires python3. You can follow the direction below to install virt
 git clone https://github.com/chrischoy/3D-R2N2.git
 ```
 
-- Setup virtual environment and install requirements
+- Setup virtual environment and install requirements and copy the theanorc file to the `$HOME` directory
 
 ```
 cd 3D-R2N2
@@ -58,11 +58,16 @@ pip install virtualenv
 virtualenv -p python3 py3
 source py3/bin/activate
 pip install -r requirements.txt
+cp .theanorc ~/.theanorc
 ```
 
-- Follow the installation instruction for `cuDNN` theano on [instruction](http://deeplearning.net/software/theano/library/sandbox/cuda/dnn.html)
+- Install meshlab (skip if you have another mesh viewer). If you skip this step, demo code will not visualize the final prediction.
 
-- run the demo code
+```
+sudo apt-get install meshlab
+```
+
+- Run the demo code
 
 ```
 python demo.py
@@ -70,9 +75,23 @@ python demo.py
 
 The demo code takes 3 images of the same chair and generates the following reconstruction.
 
-| Image 1 | Image 2 | Image 3 | Reconstruction |
-|:-------:|:-------:|:-------:|:-------:|
+| Image 1         | Image 2         | Image 3         | Reconstruction                                                                            |
+|:---------------:|:---------------:|:---------------:|:-----------------------------------------------------------------------------------------:|
 | ![](imgs/0.png) | ![](imgs/1.png) | ![](imgs/2.png) | <img src="https://github.com/chrischoy/3D-R2N2/blob/master/imgs/pred.png" height="127px"> |
+
+- Deactivate your environment when you are done
+
+```
+source deactivate
+```
+
+**Note**
+
+Activate the virtual environment before you run the experiments.
+
+```
+source py3/bin/activate
+```
 
 ### Training the network
 
@@ -91,3 +110,7 @@ tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 ```
 ./experiments/script/res_gru_net.sh
 ```
+
+## LICENSE
+
+MIT License
