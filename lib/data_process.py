@@ -15,8 +15,7 @@ from multiprocessing import Process, Event
 from lib.config import cfg
 from lib.data_augmentation import preprocess_img
 from lib.data_io import get_voxel_file, get_rendering_file
-
-import tools.binvox_rw as binvox_rw
+from lib.binvox_rw import read_as_3d_array
 
 
 def print_error(func):
@@ -171,7 +170,7 @@ class ReconstructionDataProcess(DataProcess):
     def load_label(self, category, model_id):
         voxel_fn = get_voxel_file(category, model_id)
         with open(voxel_fn, 'rb') as f:
-            voxel = binvox_rw.read_as_3d_array(f)
+            voxel = read_as_3d_array(f)
 
         return voxel
 

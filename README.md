@@ -1,6 +1,6 @@
 # 3D-R<sup>2</sup>N<sup>2</sup>: 3D Recurrent Reconstruction Neural Network
 
-This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D. This is the first work that generates a voxelized 3D reconstruction given 2D image observations using a neural network.
+This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D. This is the first work that generates a voxelized 3D reconstruction given multiple 2D image observations using a recurrent neural network.
 
 ## Citing this work
 
@@ -22,9 +22,9 @@ If you find this work useful in your research, please consider citing:
 
 Traditionally, single view reconstruction and multi view reconstruction are disjoint problmes that has been dealt using different approaches. In this work, we first propose a unified framework for both single and multi view reconstruction using a `3D Recurrent Reconstruction Neural Network` (3D-R2N2).
 
-| Schematic of the `3D-Convolutional LSTM` | Inputs (red cells + feature) for each cell (purple) |
-|:----------------------------------------:|:---------------------------------------------------:|
-| ![3D-LSTM](imgs/lstm.png)                | ![3D-LSTM](imgs/lstm_time.png)                      |
+| The schematic of the `3D-Convolutional LSTM` | Inputs (red cells + feature) for each cell (purple) |
+|:--------------------------------------------:|:---------------------------------------------------:|
+| ![3D-LSTM](imgs/lstm.png)                    | ![3D-LSTM](imgs/lstm_time.png)                      |
 
 We can feed in images a random order since the network is trained to be invariant to the order. The ciritical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self occluded (please refer to [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/) for the supplementary material for analysis).
 
@@ -91,3 +91,7 @@ tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 ```
 ./experiments/script/res_gru_net.sh
 ```
+
+## LICENSE
+
+MIT License
