@@ -1,6 +1,6 @@
 # 3D-R<sup>2</sup>N<sup>2</sup>: 3D Recurrent Reconstruction Neural Network
 
-This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D. This is the first work that generates a voxelized 3D reconstruction given multiple 2D image observations using a recurrent neural network.
+This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized (voxel is 3D equivalent of pixel) reconstruction of the object in 3D.
 
 ## Citing this work
 
@@ -50,7 +50,7 @@ The package requires python3. You can follow the direction below to install virt
 git clone https://github.com/chrischoy/3D-R2N2.git
 ```
 
-- Setup virtual environment and install requirements
+- Setup virtual environment and install requirements and copy the theanorc file to the `$HOME` directory
 
 ```
 cd 3D-R2N2
@@ -58,9 +58,14 @@ pip install virtualenv
 virtualenv -p python3 py3
 source py3/bin/activate
 pip install -r requirements.txt
+cp .theanorc ~/.theanorc
 ```
 
-- Follow the `cuDNN` installation instruction for theano on the [instruction](http://deeplearning.net/software/theano/library/sandbox/cuda/dnn.html)
+- Install meshlab (skip if you have another mesh viewer). If you skip this step, demo code will not visualize the final prediction.
+
+```
+sudo apt-get install meshlab
+```
 
 - Run the demo code
 
@@ -70,9 +75,23 @@ python demo.py
 
 The demo code takes 3 images of the same chair and generates the following reconstruction.
 
-| Image 1 | Image 2 | Image 3 | Reconstruction |
-|:-------:|:-------:|:-------:|:-------:|
+| Image 1         | Image 2         | Image 3         | Reconstruction                                                                            |
+|:---------------:|:---------------:|:---------------:|:-----------------------------------------------------------------------------------------:|
 | ![](imgs/0.png) | ![](imgs/1.png) | ![](imgs/2.png) | <img src="https://github.com/chrischoy/3D-R2N2/blob/master/imgs/pred.png" height="127px"> |
+
+- Deactivate your environment when you are done
+
+```
+source deactivate
+```
+
+**Note**
+
+Activate the virtual environment before you run the experiments.
+
+```
+source py3/bin/activate
+```
 
 ### Training the network
 
