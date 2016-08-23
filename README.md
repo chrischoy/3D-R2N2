@@ -26,7 +26,7 @@ Traditionally, single view reconstruction and multi view reconstruction are disj
 |:--------------------------------------------:|:---------------------------------------------------:|
 | ![3D-LSTM](imgs/lstm.png)                    | ![3D-LSTM](imgs/lstm_time.png)                      |
 
-We can feed in images a random order since the network is trained to be invariant to the order. The ciritical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self occluded (please refer to [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/) for the supplementary material for analysis).
+We can feed in images in random order since the network is trained to be invariant to the order. The ciritical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self occluded (please refer to [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/) for the supplementary material for analysis).
 
 ![Networks](imgs/full_network.png)
 *We used two different types of networks for the experiments: a shallow network (top) and a deep residual network (bottom).*
@@ -67,10 +67,10 @@ cp .theanorc ~/.theanorc
 sudo apt-get install meshlab
 ```
 
-- Run the demo code
+- Run the demo code and save the final 3D reconstruction to a meshfile named `prediction.obj`
 
 ```
-python demo.py
+python demo.py prediction.obj
 ```
 
 The demo code takes 3 images of the same chair and generates the following reconstruction.
@@ -82,7 +82,7 @@ The demo code takes 3 images of the same chair and generates the following recon
 - Deactivate your environment when you are done
 
 ```
-source deactivate
+deactivate
 ```
 
 **Note**

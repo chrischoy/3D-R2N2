@@ -1,8 +1,6 @@
 '''
 Parallel data loading functions
 '''
-import _init_paths
-
 import sys
 import time
 import theano
