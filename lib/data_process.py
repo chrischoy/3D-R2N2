@@ -4,7 +4,6 @@ Parallel data loading functions
 import _init_paths
 
 import sys
-import os
 import time
 import theano
 import numpy as np
@@ -15,7 +14,7 @@ from multiprocessing import Process, Event
 
 from lib.config import cfg
 from lib.data_augmentation import preprocess_img
-from lib.data_io import get_model_file, get_voxel_file, get_rendering_file
+from lib.data_io import get_voxel_file, get_rendering_file
 
 import tools.binvox_rw as binvox_rw
 
@@ -105,11 +104,7 @@ class DataProcess(Process):
 
 class ReconstructionDataProcess(DataProcess):
 
-    def __init__(self,
-                 data_queue,
-                 category_model_pair,
-                 background_imgs=[],
-                 repeat=True,
+    def __init__(self, data_queue, category_model_pair, background_imgs=[], repeat=True,
                  train=True):
         self.repeat = repeat
         self.train = train

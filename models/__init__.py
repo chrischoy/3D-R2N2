@@ -1,7 +1,6 @@
 from models.gru_net import GRUNet
 from models.res_gru_net import ResidualGRUNet
 
-
 MODELS = (GRUNet, ResidualGRUNet)
 
 

@@ -6,10 +6,11 @@ import theano
 import theano.tensor as tensor
 from lib.config import cfg
 
-tensor5 = tensor.TensorType(theano.config.floatX, (False,)*5)
+tensor5 = tensor.TensorType(theano.config.floatX, (False,) * 5)
 
 
 class Net(object):
+
     def __init__(self, random_seed=dt.datetime.now().microsecond, compute_grad=True):
         self.rng = np.random.RandomState(random_seed)
 

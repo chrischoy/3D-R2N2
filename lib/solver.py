@@ -221,8 +221,7 @@ class Solver(object):
             n_vox = cfg.CONST.N_VOX
             no_loss_return = True
             y_val = np.zeros(
-                (cfg.CONST.BATCH_SIZE, n_vox, 2, n_vox, n_vox)
-            ).astype(theano.config.floatX)
+                (cfg.CONST.BATCH_SIZE, n_vox, 2, n_vox, n_vox)).astype(theano.config.floatX)
         else:
             no_loss_return = False
             y_val = y
