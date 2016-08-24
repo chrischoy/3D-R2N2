@@ -22,11 +22,14 @@ If you find this work useful in your research, please consider citing:
 
 Traditionally, single view reconstruction and multi view reconstruction are disjoint problmes that has been dealt using different approaches. In this work, we first propose a unified framework for both single and multi view reconstruction using a `3D Recurrent Reconstruction Neural Network` (3D-R2N2).
 
-| The schematic of the `3D-Convolutional LSTM` | Inputs (red cells + feature) for each cell (purple) |
-|:--------------------------------------------:|:---------------------------------------------------:|
-| ![3D-LSTM](imgs/lstm.png)                    | ![3D-LSTM](imgs/lstm_time.png)                      |
+| 3D-Convolutional LSTM     | 3D-Convolutional GRU    | Inputs (red cells + feature) for each cell (purple) |
+|:-------------------------:|:-----------------------:|:---------------------------------------------------:|
+| ![3D-LSTM](imgs/lstm.png) | ![3D-GRU](imgs/gru.png) | ![3D-LSTM](imgs/lstm_time.png)                      |
 
-We can feed in images in random order since the network is trained to be invariant to the order. The ciritical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self occluded (please refer to [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/) for the supplementary material for analysis).
+We can feed in images in random order since the network is trained to be invariant to the order. The ciritical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self occluded.
+
+![LSTM Analysis](imgs/analysis.png)
+*Visualization of the 3D-Convolutional LSTM input gate activations. The images are fed into the network sequentially from left to right (top row). Visualization of input gate activations. The input gates corresponding to the parts that are visible and mismatch prediction open and update its hidden state (middle row). Corresponding prediction at each time step (bottom row).*
 
 ![Networks](imgs/full_network.png)
 *We used two different types of networks for the experiments: a shallow network (top) and a deep residual network (bottom).*
@@ -111,6 +114,6 @@ tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 ./experiments/script/res_gru_net.sh
 ```
 
-## LICENSE
+## License
 
 MIT License
