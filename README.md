@@ -58,11 +58,13 @@ git clone https://github.com/chrischoy/3D-R2N2.git
 ```
 cd 3D-R2N2
 pip install virtualenv
-virtualenv -p python3 py3
+virtualenv -p python3 --system-site-packages py3
 source py3/bin/activate
 pip install -r requirements.txt
 cp .theanorc ~/.theanorc
 ```
+
+### Running demo.py
 
 - Install meshlab (skip if you have another mesh viewer). If you skip this step, demo code will not visualize the final prediction.
 
@@ -88,15 +90,14 @@ The demo code takes 3 images of the same chair and generates the following recon
 deactivate
 ```
 
-**Note**
 
-Activate the virtual environment before you run the experiments.
+### Training the network
+
+- Activate the virtual environment before you run the experiments.
 
 ```
 source py3/bin/activate
 ```
-
-### Training the network
 
 - Download datasets and place them in a folder named `ShapeNet`
 
@@ -113,6 +114,22 @@ tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 ```
 ./experiments/script/res_gru_net.sh
 ```
+
+**Note**: The initial compilation might take awhile if you run the theano for the first time due to various compilations. The problem will not persist for the subsequent runs.
+
+
+## Using cuDNN
+
+To use `cuDNN` library, you have to download `cuDNN` from the nvidia [website](https://developer.nvidia.com/rdp/cudnn-download). Then, extract the files to any directory and append the directory to the environment variables like the following. Please replace the `/path/to/cuDNN/` to the directory that you extracted `cuDNN`.
+
+```
+export LD_LIBRARY_PATH=/path/to/cuDNN/lib64:$LD_LIBRARY_PATH
+export CPATH=/path/to/cuDNN/include:$CPATH
+export LIBRARY_PATH=/path/to/cuDNN/lib64:$LD_LIBRARY_PATH
+```
+
+For more details, please refer to [http://deeplearning.net/software/theano/library/sandbox/cuda/dnn.html](http://deeplearning.net/software/theano/library/sandbox/cuda/dnn.html)
+
 
 ## License
 
