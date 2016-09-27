@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+import sys
+if (sys.version_info < (3, 0)):
+    raise Exception("Please follow the installation instruction on 'https://github.com/chrischoy/3D-R2N2'")
+
 import numpy as np
 import argparse
 import pprint

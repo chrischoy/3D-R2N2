@@ -6,6 +6,9 @@ Reconstruction, ECCV 2016
 '''
 import os
 import sys
+if (sys.version_info < (3, 0)):
+    raise Exception("Please follow the installation instruction on 'https://github.com/chrischoy/3D-R2N2'")
+
 import shutil
 import numpy as np
 from subprocess import call
