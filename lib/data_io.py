@@ -20,7 +20,7 @@ def category_model_id_pair(dataset_portion=[]):
         """ Return model names"""
         model_names = [name for name in os.listdir(model_path)
                        if os.path.isdir(os.path.join(model_path, name))]
-        return model_names
+        return sorted(model_names)
 
     category_name_pair = []  # full path of the objs files
 
