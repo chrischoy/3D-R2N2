@@ -7,13 +7,17 @@ This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A
 If you find this work useful in your research, please consider citing:
 
 ```
-@article{choy20163d,
+@inproceedings{choy20163d,
   title={3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction},
   author={Choy, Christopher B and Xu, Danfei and Gwak, JunYoung and Chen, Kevin and Savarese, Silvio},
-  journal={arXiv preprint arXiv:1604.00449},
+  booktitle = {Proceedings of the European Conference on Computer Vision ({ECCV})},
   year={2016}
 }
 ```
+
+## Project Page
+
+The project page is available at [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/).
 
 ## Overview
 
