@@ -29,10 +29,10 @@ def image_transform(img, crop_x, crop_y, crop_loc=None, color_tint=None):
 def crop_center(im, new_height, new_width):
     height = im.shape[0]  # Get dimensions
     width = im.shape[1]
-    left = (width - new_width) / 2
-    top = (height - new_height) / 2
-    right = (width + new_width) / 2
-    bottom = (height + new_height) / 2
+    left = (width - new_width) // 2
+    top = (height - new_height) // 2
+    right = (width + new_width) // 2
+    bottom = (height + new_height) // 2
     return im[top:bottom, left:right]
 
 
