@@ -3,3 +3,4 @@ Theano>=0.8
 EasyDict
 Pillow
 pyyaml
+sklearn

@@ -2,6 +2,7 @@ import os
 import numpy as np
 import scipy.io as sio
 import inspect
+import sklearn.metrics
 from multiprocessing import Queue
 
 # Theano & network
@@ -44,7 +45,9 @@ def test_net():
     num_batch = int(num_data / batch_size)
 
     # prepare result container
-    results = {'cost': np.zeros(num_batch)}
+    results = {'cost': np.zeros(num_batch),
+               'mAP': np.zeros((num_batch, batch_size))}
+    # Save results for various thresholds
     for thresh in cfg.TEST.VOXEL_THRESH:
         results[str(thresh)] = np.zeros((num_batch, batch_size, 5))
 
@@ -55,16 +58,27 @@ def test_net():
             break
 
         pred, loss, activations = solver.test_output(batch_img, batch_voxel)
-        print('%d/%d, cost is: %f' % (batch_idx, num_batch, loss))
 
-        for i, thresh in enumerate(cfg.TEST.VOXEL_THRESH):
-            for j in range(batch_size):
+        for j in range(batch_size):
+            # Save IoU per thresh
+            for i, thresh in enumerate(cfg.TEST.VOXEL_THRESH):
                 r = evaluate_voxel_prediction(pred[j, ...], batch_voxel[j, ...], thresh)
                 results[str(thresh)][batch_idx, j, :] = r
+
+            # Compute AP
+            precision = sklearn.metrics.average_precision_score(
+                batch_voxel[j, :, 1].flatten(), pred[j, :, 1].flatten())
+
+            results['mAP'][batch_idx, j] = precision
 
         # record result for the batch
         results['cost'][batch_idx] = float(loss)
         batch_idx += 1
 
+        print('%d/%d, costs: %f, mAP: %f' %
+                (batch_idx, num_batch, loss, np.mean(results['mAP'][batch_idx])))
+
     print('Total loss: %f' % np.mean(results['cost']))
+    print('Total mAP: %f' % np.mean(results['mAP']))
+
     sio.savemat(result_fn, results)
