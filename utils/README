@@ -1,0 +1,17 @@
+Dataset conversion tools
+
+[PASCAL3D+]
+[URL: http://cvgl.stanford.edu/projects/pascal3d.html]
+[LINK: ftp://cs.stanford.edu/cs/cvgl/PASCAL3D+_release1.1.zip]
+
+	model: ./off2binvox CAD/aeroplane/XX.off output/path/xx.binvox
+
+	image:	1. Create new directories (dir name is hard coded)
+			$ mkdir anno_sel
+			$ cd Annotations
+			$ find -type d -exec mkdir -p ../anno_sel/{} \;
+		2. Generate annotation list
+			$ cd Annotations; find -name "*.mat" > pascal3d.list
+
+		3. Extract objects (and object specific annotations)
+			MATLAB> pascal3d_extract_objs
