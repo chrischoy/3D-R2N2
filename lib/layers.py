@@ -5,7 +5,7 @@ import collections
 import theano
 import theano.tensor as tensor
 from theano.tensor.nnet import conv, conv3d2d, sigmoid
-from theano.tensor.signal import downsample
+from theano.tensor.signal import pool
 
 trainable_params = []
 
@@ -347,7 +347,7 @@ class PoolLayer(Layer):
         self._output_shape = [self._input_shape[0], self._input_shape[1], out_r, out_c]
 
     def set_output(self):
-        pooled_out = downsample.max_pool_2d(
+        pooled_out = pool.pool_2d(
             input=self._prev_layer.output,
             ds=self._pool_size,
             ignore_border=True,
