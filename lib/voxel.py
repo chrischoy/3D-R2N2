@@ -30,7 +30,7 @@ def voxel2mesh(voxels, surface_only = True):
     positions = np.where(voxels > 0)
     voxels[positions] = 1 
     for i,j,k in zip(*positions):
-        if np.sum(voxels[i-1:i+2,j-1:j+2,k-1:k+2])< 27  or not surface_only: # identifies if current voxel has an exposed face 
+        if not surface_only or np.sum(voxels[i-1:i+2,j-1:j+2,k-1:k+2])< 27: # identifies if current voxel has an exposed face 
             verts.extend(scale * (cube_verts + cube_dist_scale * np.array([[i, j, k]])))
             faces.extend(cube_faces + curr_vert)
             curr_vert += len(cube_verts)  
