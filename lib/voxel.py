@@ -11,7 +11,7 @@ def evaluate_voxel_prediction(preds, gt, thresh):
     return np.array([diff, intersection, union, num_fp, num_fn])
 
 
-def voxel2mesh(voxels, surface_only = True):
+def voxel2mesh(voxels, surface_view):
     cube_verts = [[0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1], [1, 0, 0], [1, 0, 1], [1, 1, 0],
                   [1, 1, 1]]  # 8 points
 
@@ -27,10 +27,10 @@ def voxel2mesh(voxels, surface_only = True):
     faces = []
     curr_vert = 0
 
-    positions = np.where(voxels > 0)
+    positions = np.where(voxels > 0.3)
     voxels[positions] = 1 
     for i,j,k in zip(*positions):
-        if not surface_only or np.sum(voxels[i-1:i+2,j-1:j+2,k-1:k+2])< 27: # identifies if current voxel has an exposed face 
+        if not surface_view or np.sum(voxels[i-1:i+2,j-1:j+2,k-1:k+2])< 27: # identifies if current voxel has an exposed face 
             verts.extend(scale * (cube_verts + cube_dist_scale * np.array([[i, j, k]])))
             faces.extend(cube_faces + curr_vert)
             curr_vert += len(cube_verts)  
@@ -52,6 +52,6 @@ def write_obj(filename, verts, faces):
             f.write('f %d %d %d\n' % tuple(face))
 
 
-def voxel2obj(filename, pred):
-    verts, faces = voxel2mesh(pred)
+def voxel2obj(filename, pred, surface_view = True):
+    verts, faces = voxel2mesh(pred, surface_view)
     write_obj(filename, verts, faces)
