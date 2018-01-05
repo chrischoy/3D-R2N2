@@ -21,8 +21,6 @@ def voxel2mesh(voxels, surface_only = True):
     cube_verts = np.array(cube_verts)
     cube_faces = np.array(cube_faces) + 1
 
-   
-
     scale = 0.01
     cube_dist_scale = 1.1
     verts = []
