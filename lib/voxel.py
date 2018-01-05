@@ -29,8 +29,9 @@ def voxel2mesh(voxels, surface_view):
 
     positions = np.where(voxels > 0.3)
     voxels[positions] = 1 
-    for i,j,k in zip(*positions):
-        if not surface_view or np.sum(voxels[i-1:i+2,j-1:j+2,k-1:k+2])< 27: # identifies if current voxel has an exposed face 
+    for i, j, k in zip(*positions):
+        # identifies if current voxel has an exposed face 
+        if not surface_view or np.sum(voxels[i-1:i+2, j-1:j+2, k-1:k+2]) < 27:
             verts.extend(scale * (cube_verts + cube_dist_scale * np.array([[i, j, k]])))
             faces.extend(cube_faces + curr_vert)
             curr_vert += len(cube_verts)  
