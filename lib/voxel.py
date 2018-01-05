@@ -27,7 +27,7 @@ def voxel2mesh(voxels, surface_only = True):
     faces = []
     curr_vert = 0
 
-    positions = np.where(voxels > 0.3)
+    positions = np.where(voxels > 0)
     voxels[positions] = 1 
     for i,j,k in zip(*positions):
         if np.sum(voxels[i-1:i+2,j-1:j+2,k-1:k+2])< 27  or not surface_only: # identifies if current voxel has an exposed face 
