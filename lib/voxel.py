@@ -11,7 +11,7 @@ def evaluate_voxel_prediction(preds, gt, thresh):
     return np.array([diff, intersection, union, num_fp, num_fn])
 
 
-def voxel2mesh(voxels):
+def voxel2mesh(voxels, surface_only = True):
     cube_verts = [[0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1], [1, 0, 0], [1, 0, 1], [1, 1, 0],
                   [1, 1, 1]]  # 8 points
 
@@ -21,22 +21,22 @@ def voxel2mesh(voxels):
     cube_verts = np.array(cube_verts)
     cube_faces = np.array(cube_faces) + 1
 
-    l, m, n = voxels.shape
+   
 
     scale = 0.01
     cube_dist_scale = 1.1
     verts = []
     faces = []
     curr_vert = 0
-    for i in range(l):
-        for j in range(m):
-            for k in range(n):
-                # If there is a non-empty voxel
-                if voxels[i, j, k] > 0:
-                    verts.extend(scale * (cube_verts + cube_dist_scale * np.array([[i, j, k]])))
-                    faces.extend(cube_faces + curr_vert)
-                    curr_vert += len(cube_verts)
 
+    positions = np.where(voxels > 0.3)
+    voxels[positions] = 1 
+    for i,j,k in zip(*positions):
+        if np.sum(voxels[i-1:i+2,j-1:j+2,k-1:k+2])< 27  or not surface_only: # identifies if current voxel has an exposed face 
+            verts.extend(scale * (cube_verts + cube_dist_scale * np.array([[i, j, k]])))
+            faces.extend(cube_faces + curr_vert)
+            curr_vert += len(cube_verts)  
+              
     return np.array(verts), np.array(faces)
 
 
