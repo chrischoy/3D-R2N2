@@ -73,10 +73,10 @@ def test_net():
 
         # record result for the batch
         results['cost'][batch_idx] = float(loss)
-        batch_idx += 1
-
         print('%d/%d, costs: %f, mAP: %f' %
                 (batch_idx, num_batch, loss, np.mean(results['mAP'][batch_idx])))
+        
+        batch_idx += 1
 
     print('Total loss: %f' % np.mean(results['cost']))
     print('Total mAP: %f' % np.mean(results['mAP']))
