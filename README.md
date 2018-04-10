@@ -45,11 +45,9 @@ Please visit the result [visualization page](http://3d-r2n2.stanford.edu/viewer/
 
 We used [ShapeNet](http://shapenet.cs.stanford.edu) models to generate rendered images and voxelized models which are available below (you can follow the installation instruction below to extract it to the default directory).
 
-To download, use `wget ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz`.
-
-- ShapeNet rendered images [ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz](ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz)
-- ShapeNet voxelized models [ftp://cs.stanford.edu/cs/cvgl/ShapeNetVox32.tgz](ftp://cs.stanford.edu/cs/cvgl/ShapeNetVox32.tgz)
-- Trained ResidualGRUNet Weights [ftp://cs.stanford.edu/cs/cvgl/ResidualGRUNet.npy](ftp://cs.stanford.edu/cs/cvgl/ResidualGRUNet.npy)
+- ShapeNet rendered images [http://cvgl.stanford.edu/data2/ShapeNetRendering.tgz](http://cvgl.stanford.edu/data2/ShapeNetRendering.tgz)
+- ShapeNet voxelized models [http://cvgl.stanford.edu/data2/ShapeNetVox32.tgz](http://cvgl.stanford.edu/data2/ShapeNetVox32.tgz)
+- Trained ResidualGRUNet Weights [http://cvgl.stanford.edu/data2/ResidualGRUNet.npy](http://cvgl.stanford.edu/data2/ResidualGRUNet.npy)
 
 
 ## Installation
@@ -112,8 +110,8 @@ source py3/bin/activate
 
 ```
 mkdir ShapeNet/
-wget ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz
-wget ftp://cs.stanford.edu/cs/cvgl/ShapeNetVox32.tgz
+wget http://cvgl.stanford.edu/data2/ShapeNetRendering.tgz
+wget http://cvgl.stanford.edu/data2/ShapeNetVox32.tgz
 tar -xzf ShapeNetRendering.tgz -C ShapeNet/
 tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 ```
