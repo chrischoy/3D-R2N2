@@ -319,12 +319,11 @@ class ConvLayer(Layer):
             padded_input = self._prev_layer.output
             padded_input_shape = self._input_shape
 
-        conv_out = conv.conv2d(
+        conv_out = tensor.nnet.conv2d(
             input=padded_input,
             filters=self.W.val,
             filter_shape=self._filter_shape,
-            image_shape=np.asarray(
-                padded_input_shape, dtype=np.int16),
+            input_shape=padded_input_shape,
             border_mode='valid')
 
         # add the bias term. Since the bias is a vector (1D array), we first

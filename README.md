@@ -60,16 +60,21 @@ The package requires python3. You can follow the direction below to install virt
 git clone https://github.com/chrischoy/3D-R2N2.git
 ```
 
-- Setup virtual environment and install requirements and copy the theanorc file to the `$HOME` directory
+- Setup the anaconda virtual environment and installing requirements ([How to use anaconda](https://conda.io/docs/user-guide/install/index.html))
 
 ```
 cd 3D-R2N2
-pip install virtualenv
-virtualenv -p python3 --system-site-packages py3
-source py3/bin/activate
+conda create -n py3-theano python=3.6
+source activate py3-theano
+conda install pygpu
 pip install -r requirements.txt
+```
+- copy the theanorc file to the `$HOME` directory
+
+```
 cp .theanorc ~/.theanorc
 ```
+
 
 ### Running demo.py
 
