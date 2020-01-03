@@ -1,4 +1,6 @@
+import sys
 import time
+from contextlib import contextmanager
 
 
 class Timer(object):
@@ -25,3 +27,13 @@ class Timer(object):
             return self.average_time
         else:
             return self.diff
+
+
+@contextmanager
+def stdout_redirected(new_stdout):
+    save_stdout = sys.stdout
+    sys.stdout = new_stdout
+    try:
+        yield None
+    finally:
+        sys.stdout = save_stdout
