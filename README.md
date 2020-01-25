@@ -15,6 +15,10 @@ If you find this work useful in your research, please consider citing:
 }
 ```
 
+## News
+
+- [2020-01-25] Using a dense ocupancy grid for 3D reconstruction requires a large amount of memory and computation. We present a new auto-diff library for sparse tensors that can reconstruct objects in high resolution. Please refer to the [3D sparsity pattern reconstruction page](https://stanfordvl.github.io/MinkowskiEngine/demo/sparse_tensor_reconstruction.html) for 3D reconstruction using a sparse tensor.
+
 ## Project Page
 
 The project page is available at [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/).
